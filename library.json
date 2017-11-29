@@ -1,0 +1,29 @@
+{
+  "name": "gbjBH1750FVI",
+  "keywords": "sensors",
+  "description": "The library communicates with the sensor on two wire (I2C) bus. It allows set address and measurement mode of the sensor statically at start or dynamically with help of setters.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrkaleArduinoLib/gbj_bh1750fvi.git"
+  },
+  "version": "1.0.0",
+  "frameworks": "arduino",
+  "platforms": [
+     {
+       "name": "atmelavr",
+       "title": "Atmel AVR"
+     },
+     {
+       "name": "atmelsam",
+       "title": "Atmel SAM"
+     },
+     {
+       "name": "espressif32",
+       "title": "Espressif 32"
+     },
+     {
+       "name": "espressif8266",
+       "title": "Espressif 8266"
+     }
+   ]
+}

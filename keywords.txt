@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+gbj_bh1750fvi	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin	KEYWORD2
+measureLight	KEYWORD2
+setAddress	KEYWORD2
+setMode	KEYWORD2
+getMode	KEYWORD2
+getLight	KEYWORD2
+getLightMSB	KEYWORD2
+getLightLSB	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+GBJ_BH1750FVI_VERSION	LITERAL1
+GBJ_BH1750FVI_ADDRESS_L	LITERAL1
+GBJ_BH1750FVI_ADDRESS_H	LITERAL1
+GBJ_BH1750FVI_ADDRESS_DEF	LITERAL1
+GBJ_BH1750FVI_CONTINUOUS_HIGH	LITERAL1
+GBJ_BH1750FVI_CONTINUOUS_HIGH2	LITERAL1
+GBJ_BH1750FVI_CONTINUOUS_LOW	LITERAL1
+GBJ_BH1750FVI_ONETIME_HIGH	LITERAL1
+GBJ_BH1750FVI_ONETIME_HIGH2	LITERAL1
+GBJ_BH1750FVI_ONETIME_LOW	LITERAL1
+GBJ_BH1750FVI_MODE_DEF	LITERAL1
+GBJ_BH1750FVI_MODE_BAD	LITERAL1
+GBJ_BH1750FVI_ERR_MODE	LITERAL1
