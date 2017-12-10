@@ -51,7 +51,7 @@ void setup()
 
 void loop()
 {
-  if (Light.getLastResult()) return;
+  if (Light.isError()) return;
   // Change sensor's address
   digitalWrite(PIN_BH1750FVI_ADDR, digitalRead(PIN_BH1750FVI_ADDR) ^ 1);
   Light.setAddress(digitalRead(PIN_BH1750FVI_ADDR));

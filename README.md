@@ -31,7 +31,7 @@ Library has been inspired by the *Christopher Laws*'s library *BH1750-master ver
 - **TwoWire**: I2C system library loaded from the file *Wire.h*.
 
 #### Custom Libraries
-- **gbjTwoWire**: I2C custom library loaded from the file *gbj_twowire.h*. The library [gbjBH1750FVI](#library) inherits from this library common functionality with bus.
+- **gbjTwoWire**: I2C custom library loaded from the file *gbj_twowire.h*. The library [gbjBH1750FVI](#library) inherits common bus functionality from this library.
 
 
 <a id="constants"></a>
@@ -49,6 +49,8 @@ Library has been inspired by the *Christopher Laws*'s library *BH1750-master ver
 - **GBJ\_BH1750FVI\_MODE\_DEF**: Default measurement mode set to *GBJ\_BH1750FVI\_CONTINUOUS\_HIGH*.
 - **GBJ\_BH1750FVI\_MODE\_BAD**: Virtual value for a bad measurement mode.
 
+
+<a id="errors"></a>
 #### Error codes
 - **GBJ\_BH1750FVI\_ERR\_MODE**: Bad measurement mode
 
@@ -82,12 +84,12 @@ Other possible setters and getters are described at parent library [gbjTwoWire](
 <a id="begin"></a>
 ## begin()
 #### Description
-The method takes, sanitizes, and stores parameters of the sensor to a class instance object and initiates two wire bus.
+The method takes, sanitizes, and stores parameters of the sensor to a class instance object and initiates two-wire bus.
 - You can use [setters](#interface) later in order to change sensor's parameters.
 - Setting sensor parameters in this method located in the setup section of an application instead of constructor enables to set the sensor's address according to the ADDR pin, if it is wired in that way.
 
 #### Syntax
-    uint8_t begin(uint8_t address, uint8_t mode, boolen busStop);
+    uint8_t begin(uint8_t address, uint8_t mode, boolean busStop);
 
 #### Parameters
 <a id="prm_address"></a>
@@ -180,7 +182,7 @@ The method overrides the method of the parent class by transforming and sanitizi
 - **address**: The address value or the ADDR pin state, so the same range as the argument [address](#prm_address) in the method [begin()](#begin).
 
 #### Returns
-Some of result or error codes defined by [Constants](#constants).
+Some of result or [error codes](#errors).
 
 #### Example
 ```cpp
@@ -206,7 +208,7 @@ The method sets the measurement mode of the sensor. It should be one of defined 
 - **mode**: The same as the argument [mode](#prm_mode) in the method [begin()](#begin).
 
 #### Returns
-Some of result or error codes defined by [Constants](#constants).
+Some of result or [error codes](#errors).
 
 #### See also
 [begin()](#begin)

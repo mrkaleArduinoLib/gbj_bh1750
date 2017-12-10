@@ -50,7 +50,7 @@ void setup()
 
 void loop()
 {
-  if (Light.getLastResult()) return;
+  if (Light.isError()) return;
   Serial.println(Light.measureLight());
   delay(PERIOD_MEASURE);
 }
