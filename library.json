@@ -1,7 +1,7 @@
 {
   "name": "gbjBH1750FVI",
   "keywords": "sensors",
-  "description": "The library communicates with the sensor on two wire (I2C) bus. It allows set address and measurement mode of the sensor statically at start or dynamically with help of setters.",
+  "description": "The library communicates with the sensor on two-wire (I2C) bus. It allows set address and measurement mode of the sensor statically at start or dynamically with help of setters.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mrkaleArduinoLib/gbj_bh1750fvi.git"

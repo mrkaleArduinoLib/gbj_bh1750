@@ -17,7 +17,7 @@
 
   CREDENTIALS:
   Author: Libor Gabaj
-  GitHub: https://github.com/mrkalePhotonArduinoLib/BH1750FVI.git
+  GitHub: https://github.com/mrkaleArduinoLib/gbj_bh1750fvi.git
 
   CREDITS:
   TimChristopher Laws
