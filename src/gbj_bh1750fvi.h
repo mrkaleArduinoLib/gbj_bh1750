@@ -38,6 +38,7 @@
 #elif defined(PARTICLE)
   #include <Particle.h>
 #endif
+
 #include "gbj_twowire.h"
 
 // Possible addresses
@@ -63,12 +64,14 @@
 #define GBJ_BH1750FVI_MODE_BAD          0xFF  // Value for bad measurement mode
 #define GBJ_BH1750FVI_MODE_DEF          GBJ_BH1750FVI_CONTINUOUS_HIGH // Default measurement mode
 
+
 class gbj_bh1750fvi : public gbj_twowire
 {
 public:
 //------------------------------------------------------------------------------
 // Public methods
 //------------------------------------------------------------------------------
+
 
 /*
   Initialize two wire bus and sensor with parameters stored by constructor.

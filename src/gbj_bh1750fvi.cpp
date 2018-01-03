@@ -18,15 +18,15 @@ uint16_t gbj_bh1750fvi::measureLight()
   _lightValue = 0xFFFF; // Wrong light values
   _lightMSB = _lightLSB = 0xFF;
   initBus();
-  Wire.beginTransmission(getAddress());
-  if (Wire.requestFrom(getAddress(), byteCount, (uint8_t) getBusStop()) > 0 \
-  && Wire.available() >= byteCount)
+  beginTransmission(getAddress());
+  if (requestFrom(getAddress(), byteCount, (uint8_t) getBusStop()) > 0 \
+  && available() >= byteCount)
   {
-    _lightMSB = Wire.read();        // Read high byte first
-    _lightLSB = Wire.read();        // Read low byte
+    _lightMSB = read();        // Read high byte first
+    _lightLSB = read();        // Read low byte
     _lightValue = ((_lightMSB << 8) | _lightLSB) / 6 * 5; // Division by 1.2
   }
-  setLastResult(Wire.endTransmission(getBusStop()));
+  setLastResult(endTransmission(getBusStop()));
   return _lightValue;
 }
 
@@ -57,9 +57,9 @@ uint8_t gbj_bh1750fvi::setMode(uint8_t mode)
   }
   // Set changed mode
   initBus();
-  Wire.beginTransmission(getAddress());
-  Wire.write(getMode());
-  if (setLastResult(Wire.endTransmission(getBusStop()))) return getLastResult();
+  beginTransmission(getAddress());
+  writeByte(getMode());
+  if (setLastResult(endTransmission(getBusStop()))) return getLastResult();
   wait(10); // Wait for waking up
   return getLastResult();
 }
