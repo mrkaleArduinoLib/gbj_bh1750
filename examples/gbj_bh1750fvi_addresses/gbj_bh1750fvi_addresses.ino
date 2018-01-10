@@ -58,6 +58,14 @@ void loop()
   Serial.print("0x");
   Serial.print(Light.getAddress(), HEX);
   Serial.print("/");
-  Serial.println(Light.measureLight());
+  if (Light.isSuccess())
+  {
+    Serial.println(Light.measureLight());
+  }
+  else
+  {
+    Serial.print("Error: ");
+    Serial.println(Light.getLastResult());
+  }
   delay(PERIOD_MEASURE);
 }

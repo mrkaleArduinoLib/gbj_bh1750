@@ -52,16 +52,16 @@
 #define GBJ_BH1750FVI_RESET             0x07    // Reset data register value
 
 // Measurement (mode) commands
-#define GBJ_BH1750FVI_CONTINUOUS_HIGH   0x10  // 1lx/120ms
-#define GBJ_BH1750FVI_CONTINUOUS_HIGH2  0x11  // 0.5lx/120ms
-#define GBJ_BH1750FVI_CONTINUOUS_LOW    0x13  // 4lx/16ms
-#define GBJ_BH1750FVI_ONETIME_HIGH      0x20  // 1lx/120ms
-#define GBJ_BH1750FVI_ONETIME_HIGH2     0x21  // 0.5lx/120ms
-#define GBJ_BH1750FVI_ONETIME_LOW       0x23  // 4lx/16ms
+#define GBJ_BH1750FVI_CONTINUOUS_HIGH   0x10    // 1lx/120ms
+#define GBJ_BH1750FVI_CONTINUOUS_HIGH2  0x11    // 0.5lx/120ms
+#define GBJ_BH1750FVI_CONTINUOUS_LOW    0x13    // 4lx/16ms
+#define GBJ_BH1750FVI_ONETIME_HIGH      0x20    // 1lx/120ms
+#define GBJ_BH1750FVI_ONETIME_HIGH2     0x21    // 0.5lx/120ms
+#define GBJ_BH1750FVI_ONETIME_LOW       0x23    // 4lx/16ms
 
 // Result codes
-#define GBJ_BH1750FVI_ERR_MODE          255   // Bad measurement mode
-#define GBJ_BH1750FVI_MODE_BAD          0xFF  // Value for bad measurement mode
+#define GBJ_BH1750FVI_ERR_MODE          255     // Bad measurement mode
+#define GBJ_BH1750FVI_VALUE_BAD         0xFFFF  // Value for bad measurement mode
 #define GBJ_BH1750FVI_MODE_DEF          GBJ_BH1750FVI_CONTINUOUS_HIGH // Default measurement mode
 
 
@@ -107,6 +107,49 @@ public:
 
 
 /*
+  Activate sensor.
+
+  DESCRIPTION:
+  The method puts the sensor to the state waiting on measurement command.
+
+  PARAMETERS: none
+
+  RETURN:
+  Result code.
+*/
+  uint8_t powerOn();
+
+
+/*
+  Deactivate sensor.
+
+  DESCRIPTION:
+  The method puts the sensor to the non-active (sleep) state.
+
+  PARAMETERS: none
+
+  RETURN:
+  Result code.
+*/
+  uint8_t powerDown();
+
+
+/*
+  Reset sensor.
+
+  DESCRIPTION:
+  The method resets the illuminance data register of the sensor and removes
+  previous measurement result.
+
+  PARAMETERS: none
+
+  RETURN:
+  Result code.
+*/
+  uint8_t reset();
+
+
+/*
   Measure current light intensity in lux.
 
   DESCRIPTION:
@@ -114,7 +157,7 @@ public:
   PARAMETERS: none
 
   RETURN:
-  Current light intensity in lux.
+  Current light intensity in 0 ~ 54612 lux.
 */
 
   uint16_t measureLight();
@@ -140,43 +183,11 @@ private:
 //------------------------------------------------------------------------------
 // Private attributes
 //------------------------------------------------------------------------------
-  uint8_t  _mode;           // Current measurement mode of the sensor
-  uint8_t  _lightMSB;       // Most significant byte of the raw light value
-  uint8_t  _lightLSB;       // Least significant byte of the raw light value
-  uint16_t _lightValue;     // Final light intensity in lux
+  uint8_t  _mode;             // Current measurement mode of the sensor
+  uint8_t  _lightMSB;         // Most significant byte of the raw light value
+  uint8_t  _lightLSB;         // Least significant byte of the raw light value
+  uint16_t _lightValue;       // Final light intensity in lux
 
-
-//------------------------------------------------------------------------------
-// Private methods
-//------------------------------------------------------------------------------
-
-/*
-  Sanitize and translate address
-
-  DESCRIPTION:
-  The method sanitizes sensor address. If the input address is the state of
-  the ADDR pin, it translates this state to corresponding address.
-
-  PARAMETERS:
-  address - see begin().
-
-  RETURN: Real bus address or zero.
-*/
-  uint8_t sanitizeAddress(uint8_t address);
-
-
-/*
-  Store measurement mode to the class instance.
-
-  DESCRIPTION:
-  The method sanitizes sensor measurement mode.
-
-  PARAMETERS:
-  mode - see begin().
-
-  RETURN: Measurement mode or zero.
-*/
-  uint8_t sanitizeMode(uint8_t mode);
 };
 
 #endif

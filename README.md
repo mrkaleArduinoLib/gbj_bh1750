@@ -47,7 +47,7 @@ Library has been inspired by the *Christopher Laws*'s library *BH1750-master ver
 - **GBJ\_BH1750FVI\_ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
 - **GBJ\_BH1750FVI\_ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
 - **GBJ\_BH1750FVI\_MODE\_DEF**: Default measurement mode set to *GBJ\_BH1750FVI\_CONTINUOUS\_HIGH*.
-- **GBJ\_BH1750FVI\_MODE\_BAD**: Virtual value for a bad measurement mode.
+- **GBJ\_BH1750FVI\_VALUE\_BAD**: Virtual value for a bad measurement, which can never occur at correct processing.
 
 
 <a id="errors"></a>
@@ -67,6 +67,9 @@ The library does not need special constructor and destructor, so that the inheri
 
 #### Main
 - [begin()](#begin)
+- [powerOn()](#power)
+- [powerDown()](#power)
+- [reset()](#reset)
 - [measureLight()](#measureLight)
 
 #### Setters
@@ -143,10 +146,55 @@ Specific values of arguments can be set by corresponding [setters](#interface).
 [Back to interface](#interface)
 
 
+<a id="power"></a>
+## powerOn(), powerDown()
+#### Description
+The particular method either activates (wakes up) or deactivates (sleeps) a sensor.
+In active state a sensor waits for the measurement command.
+In sleeping state a sensor has minimal power consumption.
+
+#### Syntax
+    uint8_t powerOn();
+    uint8_t powerDown();
+
+#### Parameters
+None
+
+#### Returns
+Some of result or [error codes](#errors).
+
+#### See also
+[reset()](#reset)
+
+[Back to interface](#interface)
+
+
+<a id="reset"></a>
+## reset()
+#### Description
+The method resets the illuminance data register of the sensor and removes previous measurement result.
+
+#### Syntax
+    uint8_t reset();
+
+#### Parameters
+None
+
+#### Returns
+Some of result or [error codes](#errors).
+
+#### See also
+[measureLight()](#measureLight)
+
+[Back to interface](#interface)
+
+
 <a id="measureLight"></a>
 ## measureLight()
 #### Description
-The method measures the ambient light intensity in lux at 16-bit resolution with accuracy determined by measurement mode while uses the parameters set by either the method [begin()](#begin) or setters. The method stores the measured value in the class instance object for repeating retrieving without need to measure again.
+The method measures the ambient light intensity in lux at 16-bit resolution with accuracy determined by measurement mode while uses the parameters set by either the method [begin()](#begin) or setters. The method stores the measured value in the class instance object for repeating retrieval without need to measure again.
+- Maximal light intensity value is 54612 lux, because of maximal unsigned integer value 65535 in the internal registers of the sensor and divided by measurement coefficient 1.2, i.e.,
+  `65535 / 1.2 = 54612.5` and truncating decimal part.
 
 #### Syntax
     uint16_t measureLight();
@@ -155,7 +203,7 @@ The method measures the ambient light intensity in lux at 16-bit resolution with
 None
 
 #### Returns
-Current ambient light intensity in lux.
+Current ambient light intensity in the range 0 ~ 54612 lux or value [GBJ\_BH1750FVI\_VALUE\_BAD](#constants) signaling erroneous measurement. The corresponding [error code](#errors) is set as well.
 
 #### See also
 [getLight()](#getLight)
