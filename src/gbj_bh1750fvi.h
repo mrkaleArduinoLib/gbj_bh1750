@@ -44,12 +44,6 @@
 // Possible addresses
 #define GBJ_BH1750FVI_ADDRESS_L         0x23    // ADDR <= 0.3Vcc
 #define GBJ_BH1750FVI_ADDRESS_H         0x5C    // ADDR >= 0.7Vcc
-#define GBJ_BH1750FVI_ADDRESS_DEF GBJ_BH1750FVI_ADDRESS_L // Default address
-
-// Function commands
-#define GBJ_BH1750FVI_POWER_DOWN        0x00    // No active state
-#define GBJ_BH1750FVI_POWER_ON          0x01    // Wating for measurment command
-#define GBJ_BH1750FVI_RESET             0x07    // Reset data register value
 
 // Measurement (mode) commands
 #define GBJ_BH1750FVI_CONTINUOUS_HIGH   0x10    // 1lx/120ms
@@ -62,7 +56,6 @@
 // Result codes
 #define GBJ_BH1750FVI_ERR_MODE          255     // Bad measurement mode
 #define GBJ_BH1750FVI_VALUE_BAD         0xFFFF  // Value for bad measurement mode
-#define GBJ_BH1750FVI_MODE_DEF          GBJ_BH1750FVI_CONTINUOUS_HIGH // Default measurement mode
 
 
 class gbj_bh1750fvi : public gbj_twowire
@@ -71,8 +64,6 @@ public:
 //------------------------------------------------------------------------------
 // Public methods
 //------------------------------------------------------------------------------
-
-
 /*
   Initialize two wire bus and sensor with parameters stored by constructor.
 
@@ -100,10 +91,10 @@ public:
   RETURN:
   Result code.
 */
-  uint8_t begin( \
-    uint8_t address = GBJ_BH1750FVI_ADDRESS_DEF, \
-    uint8_t mode = GBJ_BH1750FVI_MODE_DEF, \
-    bool busStop = true);
+uint8_t begin( \
+  uint8_t address = GBJ_BH1750FVI_ADDRESS_L, \
+  uint8_t mode = GBJ_BH1750FVI_CONTINUOUS_HIGH, \
+  bool busStop = true);
 
 
 /*
@@ -117,7 +108,7 @@ public:
   RETURN:
   Result code.
 */
-  uint8_t powerOn();
+uint8_t powerOn();
 
 
 /*
@@ -131,7 +122,7 @@ public:
   RETURN:
   Result code.
 */
-  uint8_t powerDown();
+uint8_t powerDown();
 
 
 /*
@@ -146,7 +137,7 @@ public:
   RETURN:
   Result code.
 */
-  uint8_t reset();
+uint8_t reset();
 
 
 /*
@@ -160,33 +151,42 @@ public:
   Current light intensity in 0 ~ 54612 lux.
 */
 
-  uint16_t measureLight();
+uint16_t measureLight();
 
 
 //------------------------------------------------------------------------------
 // Public setters - they usually return result code.
 //------------------------------------------------------------------------------
-  uint8_t setAddress(uint8_t address);
-  uint8_t setMode(uint8_t mode);
+uint8_t setAddress(uint8_t address);
+uint8_t setMode(uint8_t mode);
 
 
 //------------------------------------------------------------------------------
 // Public getters
 //------------------------------------------------------------------------------
-  uint8_t  getMode();         // Current measurement mode
-  uint16_t getLight();        // Recently measured light value
-  uint8_t  getLightMSB();     // Recently measured high byte
-  uint8_t  getLightLSB();     // Recently measured low byte
+uint8_t  getMode();         // Current measurement mode
+uint16_t getLight();        // Recently measured light value
+uint8_t  getLightMSB();     // Recently measured high byte
+uint8_t  getLightLSB();     // Recently measured low byte
 
 
 private:
 //------------------------------------------------------------------------------
+// Private constants
+//------------------------------------------------------------------------------
+enum Command
+{
+  CMD_POWER_DOWN  = 0xE3,   // No active state
+  CMD_POWER_ON    = 0xE5,   // Wating for measurment command
+  CMD_RESET       = 0xFE,   // Reset data register value
+};
+//------------------------------------------------------------------------------
 // Private attributes
 //------------------------------------------------------------------------------
-  uint8_t  _mode;             // Current measurement mode of the sensor
-  uint8_t  _lightMSB;         // Most significant byte of the raw light value
-  uint8_t  _lightLSB;         // Least significant byte of the raw light value
-  uint16_t _lightValue;       // Final light intensity in lux
+uint8_t  _mode;             // Current measurement mode of the sensor
+uint8_t  _lightMSB;         // Most significant byte of the raw light value
+uint8_t  _lightLSB;         // Least significant byte of the raw light value
+uint16_t _lightValue;       // Final light intensity in lux
 
 };
 

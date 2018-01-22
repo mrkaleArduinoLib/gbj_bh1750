@@ -13,20 +13,20 @@ uint8_t gbj_bh1750fvi::begin(uint8_t address, uint8_t mode, bool busStop)
 
 uint8_t gbj_bh1750fvi::powerOn()
 {
-  return busSend(GBJ_BH1750FVI_POWER_ON);
+  return busSend(CMD_POWER_ON);
 }
 
 
 uint8_t gbj_bh1750fvi::powerDown()
 {
-  return busSend(GBJ_BH1750FVI_POWER_DOWN);
+  return busSend(CMD_POWER_DOWN);
 }
 
 
 uint8_t gbj_bh1750fvi::reset()
 {
   if (powerOn()) return getLastResult();
-  return busSend(GBJ_BH1750FVI_RESET);
+  return busSend(CMD_RESET);
 }
 
 

@@ -39,14 +39,12 @@ Library has been inspired by the *Christopher Laws*'s library *BH1750-master ver
 - **GBJ\_BH1750FVI\_VERSION**: Name and semantic version of the library.
 - **GBJ\_BH1750FVI\_ADDRESS\_L**: Sensor address (0x23) for low ADDR pin state with voltage <= 0.3 Vcc.
 - **GBJ\_BH1750FVI\_ADDRESS\_H**: Sensor address (0x5C) for high ADDR pin state with voltage >= 0.7 Vcc.
-- **GBJ\_BH1750FVI\_ADDRESS\_DEF**: Default sensor address set to *GBJ\_BH1750FVI\_ADDRESS\_L*.
 - **GBJ\_BH1750FVI\_CONTINUOUS\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms.
 - **GBJ\_BH1750FVI\_CONTINUOUS\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms.
 - **GBJ\_BH1750FVI\_CONTINUOUS\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms.
 - **GBJ\_BH1750FVI\_ONETIME\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
 - **GBJ\_BH1750FVI\_ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
 - **GBJ\_BH1750FVI\_ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
-- **GBJ\_BH1750FVI\_MODE\_DEF**: Default measurement mode set to *GBJ\_BH1750FVI\_CONTINUOUS\_HIGH*.
 - **GBJ\_BH1750FVI\_VALUE\_BAD**: Virtual value for a bad measurement, which can never occur at correct processing.
 
 
