@@ -25,7 +25,6 @@
  */
 #ifndef GBJ_BH1750FVI_H
 #define GBJ_BH1750FVI_H
-#define GBJ_BH1750FVI_VERSION "GBJ_BH1750FVI 1.0.0"
 
 #if defined(__AVR__)
   #if ARDUINO >= 100
@@ -34,36 +33,32 @@
     #include <WProgram.h>
   #endif
   #include <inttypes.h>
-  #include <Wire.h>
 #elif defined(PARTICLE)
   #include <Particle.h>
 #endif
 
 #include "gbj_twowire.h"
 
-// Possible addresses
-#define GBJ_BH1750FVI_ADDRESS_L         0x23    // ADDR <= 0.3Vcc
-#define GBJ_BH1750FVI_ADDRESS_H         0x5C    // ADDR >= 0.7Vcc
-
-// Measurement (mode) commands
-#define GBJ_BH1750FVI_CONTINUOUS_HIGH   0x10    // 1lx/120ms
-#define GBJ_BH1750FVI_CONTINUOUS_HIGH2  0x11    // 0.5lx/120ms
-#define GBJ_BH1750FVI_CONTINUOUS_LOW    0x13    // 4lx/16ms
-#define GBJ_BH1750FVI_ONETIME_HIGH      0x20    // 1lx/120ms
-#define GBJ_BH1750FVI_ONETIME_HIGH2     0x21    // 0.5lx/120ms
-#define GBJ_BH1750FVI_ONETIME_LOW       0x23    // 4lx/16ms
-
-// Result codes
-#define GBJ_BH1750FVI_ERR_MODE          255     // Bad measurement mode
-#define GBJ_BH1750FVI_VALUE_BAD         0xFFFF  // Value for bad measurement mode
-
 
 class gbj_bh1750fvi : public gbj_twowire
 {
 public:
 //------------------------------------------------------------------------------
+// Public constants
+//------------------------------------------------------------------------------
+static const String VERSION;
+
+
+//------------------------------------------------------------------------------
 // Public methods
 //------------------------------------------------------------------------------
+/*
+  Constructor taken from parent class.
+*/
+gbj_bh1750fvi(uint32_t clockSpeed = CLOCK_100KHZ, bool busStop = true) \
+: gbj_twowire(clockSpeed, busStop) {};
+
+
 /*
   Initialize two wire bus and sensor with parameters stored by constructor.
 
@@ -73,28 +68,21 @@ public:
 
   PARAMETERS:
   address - One of two possible 7 bit addresses of the sensor or state
-            of the ADDR pin.
+            of the ADDR pin. If it is not some of metioned values, it fallbacks
+            to default value.
             - Data type: non-negative integer
-            - Default value: GBJ_BH1750FVI_ADDRESS_L
-            - Limited range: GBJ_BH1750FVI_ADDRESS_L, GBJ_BH1750FVI_ADDRESS_H, HIGH, LOW
+            - Default value: ADDRESS_LOW
+            - Limited range: ADDRESS_LOW, ADDRESS_HIGH, HIGH, LOW
 
   mode - Measurement mode from possible listed ones.
          - Data type: non-negative integer
-         - Default value: GBJ_BH1750FVI_CONTINUOUS_HIGH
-         - Limited range: GBJ_BH1750FVI_CONTINUOUS_HIGH ~ GBJ_BH1750FVI_ONETIME_LOW
-
-  busStop - Flag about releasing the bus after end of data transmission.
-            - Data type: boolean
-            - Default value: true
-            - Limited range: true, false
+         - Default value: CMD_CONTINUOUS_HIGH
+         - Limited range: CMD_CONTINUOUS_HIGH ~ CMD_ONETIME_LOW
 
   RETURN:
   Result code.
 */
-uint8_t begin( \
-  uint8_t address = GBJ_BH1750FVI_ADDRESS_L, \
-  uint8_t mode = GBJ_BH1750FVI_CONTINUOUS_HIGH, \
-  bool busStop = true);
+uint8_t begin(uint8_t address = ADDRESS_LOW, uint8_t mode = CMD_CONTINUOUS_HIGH);
 
 
 /*
@@ -150,7 +138,6 @@ uint8_t reset();
   RETURN:
   Current light intensity in 0 ~ 54612 lux.
 */
-
 uint16_t measureLight();
 
 
@@ -164,29 +151,40 @@ uint8_t setMode(uint8_t mode);
 //------------------------------------------------------------------------------
 // Public getters
 //------------------------------------------------------------------------------
-uint8_t  getMode();         // Current measurement mode
-uint16_t getLight();        // Recently measured light value
-uint8_t  getLightMSB();     // Recently measured high byte
-uint8_t  getLightLSB();     // Recently measured low byte
+inline uint8_t getMode() { return _mode; };  // Current measurement mode
+inline uint8_t getLightMSB() { return _light >> 8; };  // Recently measured high byte
+inline uint8_t getLightLSB() { return _light & 0xFF; }; // Recently measured low byte
+inline uint16_t getLight() { return _light; };  // Recently measured light value
 
 
 private:
 //------------------------------------------------------------------------------
 // Private constants
 //------------------------------------------------------------------------------
-enum Command
+enum Commands
 {
-  CMD_POWER_DOWN  = 0xE3,   // No active state
-  CMD_POWER_ON    = 0xE5,   // Wating for measurment command
-  CMD_RESET       = 0xFE,   // Reset data register value
+  CMD_CONTINUOUS_HIGH = 0x10,  // 1 lx / 120 ms
+  CMD_CONTINUOUS_HIGH2 = 0x11,  // 0.5 lx / 120 ms
+  CMD_CONTINUOUS_LOW = 0x13,  // 4 lx / 16 ms
+  CMD_ONETIME_HIGH = 0x20,  // 1 lx / 120 ms
+  CMD_ONETIME_HIGH2 = 0x21,  // 0.5 lx / 120 ms
+  CMD_ONETIME_LOW = 0x23,  // 4 lx / 16 ms
+  CMD_POWER_DOWN = 0xE3,  // No active state
+  CMD_POWER_ON = 0xE5,  // Wating for measurment command
+  CMD_RESET = 0xFE,  // Reset data register value
 };
+enum Addresses
+{
+  ADDRESS_LOW = 0x23, // ADDR <= 0.3Vcc or floating
+  ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
+};
+
+
 //------------------------------------------------------------------------------
 // Private attributes
 //------------------------------------------------------------------------------
-uint8_t  _mode;             // Current measurement mode of the sensor
-uint8_t  _lightMSB;         // Most significant byte of the raw light value
-uint8_t  _lightLSB;         // Least significant byte of the raw light value
-uint16_t _lightValue;       // Final light intensity in lux
+uint8_t _mode;  // Current measurement mode of the sensor
+uint16_t _light;  // Light intensity in lux
 
 };
 

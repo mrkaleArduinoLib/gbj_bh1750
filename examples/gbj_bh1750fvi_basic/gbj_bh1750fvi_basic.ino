@@ -18,9 +18,33 @@
 #include "gbj_bh1750fvi.h"
 #define SKETCH "GBJ_BH1750FVI_BASIC 1.0.0"
 
-const unsigned int PERIOD_MEASURE = 3000;      // Time in miliseconds between measurements
+const unsigned int PERIOD_MEASURE = 3000;  // Time in miliseconds between measurements
 
 gbj_bh1750fvi Light = gbj_bh1750fvi();
+// gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_400KHZ);
+
+
+void errorHandler()
+{
+  if (Light.isSuccess()) return;
+  Serial.print("Error: ");
+  Serial.print(Light.getLastResult());
+  Serial.print(" - ");
+  switch (Light.getLastResult())
+  {
+    case gbj_bh1750fvi::ERROR_ADDRESS:
+      Serial.println("Bad address");
+      break;
+
+    case gbj_bh1750fvi::ERROR_NACK_OTHER:
+      Serial.println("Other error");
+      break;
+
+    default:
+      Serial.println("Uknown error");
+      break;
+  }
+}
 
 
 void setup()
@@ -28,13 +52,14 @@ void setup()
   Serial.begin(9600);
   Serial.println(SKETCH);
   Serial.println("Libraries:");
-  Serial.println(GBJ_TWOWIRE_VERSION);
-  Serial.println(GBJ_BH1750FVI_VERSION);
+  Serial.println(gbj_twowire::VERSION);
+  Serial.println(gbj_bh1750fvi::VERSION);
   Serial.println("---");
 
   if (Light.begin())
   {
-    Serial.println("Sensor not initiated!");
+    errorHandler();
+    return;
   }
   else
   {
@@ -42,6 +67,8 @@ void setup()
     Serial.println(Light.getAddress(), HEX);
     Serial.print("Mode: 0x");
     Serial.println(Light.getMode(), HEX);
+    Serial.print("Clock: ");
+    Serial.println(Light.getBusClock());
     Serial.println("---");
     Serial.println("Light in lux:");
   }
