@@ -7,7 +7,7 @@
   of the ADDR pin.
   - Connect sensor's pins to microcontroller's I2C bus as described in README.md
     for used platform accordingly.
-  - Connect microcontroller's digital pin 7 to sensor's pin ADDR (Addressing)
+  - Connect microcontroller's some general digital pin to sensor's pin ADDR (Addressing)
     in order to set its address programatically.
 
   LICENSE:
@@ -17,13 +17,21 @@
   CREDENTIALS:
   Author: Libor Gabaj
 */
-#include "gbj_bh1750fvi.h"
 #define SKETCH "GBJ_BH1750FVI_ADDRESSES 1.0.0"
 
+#include "gbj_bh1750fvi.h"
+
 const unsigned int PERIOD_MEASURE = 3000;  // Time in miliseconds between measurements
+
+#if defined(ESP8266) || defined(ESP32)
+const unsigned char PIN_BH1750FVI_ADDR = D0;  // Address pin of the sensor
+#else
 const unsigned char PIN_BH1750FVI_ADDR = 7;  // Address pin of the sensor
+#endif
 
 gbj_bh1750fvi Light = gbj_bh1750fvi();
+// gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
+// gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_400KHZ);
 
 
 void errorHandler()

@@ -36,12 +36,12 @@ uint16_t gbj_bh1750fvi::measureLight()
   // Send one-time mode and wait for the measurement
   switch (getMode())
   {
-    case CMD_ONETIME_HIGH:
-    case CMD_ONETIME_HIGH2:
+    case MODE_ONETIME_HIGH:
+    case MODE_ONETIME_HIGH2:
       if (busSend(getMode())) return getLastResult();
       wait(180);
       break;
-    case CMD_ONETIME_LOW:
+    case MODE_ONETIME_LOW:
       if (busSend(getMode())) return getLastResult();
       wait(24);
       break;
@@ -92,15 +92,15 @@ uint8_t gbj_bh1750fvi::setMode(uint8_t mode)
   // Sanitize mode
   switch (mode)
   {
-    case CMD_CONTINUOUS_HIGH:
-    case CMD_CONTINUOUS_HIGH2:
-    case CMD_ONETIME_HIGH:
-    case CMD_ONETIME_HIGH2:
-    case CMD_CONTINUOUS_LOW:
-    case CMD_ONETIME_LOW:
+    case MODE_CONTINUOUS_HIGH:
+    case MODE_CONTINUOUS_HIGH2:
+    case MODE_ONETIME_HIGH:
+    case MODE_ONETIME_HIGH2:
+    case MODE_CONTINUOUS_LOW:
+    case MODE_ONETIME_LOW:
       break;
     default:
-      mode = CMD_CONTINUOUS_HIGH;
+      mode = MODE_CONTINUOUS_HIGH;
       break;
   }
   // No mode change
@@ -110,12 +110,12 @@ uint8_t gbj_bh1750fvi::setMode(uint8_t mode)
   initLastResult();
   switch (getMode())
   {
-    case CMD_CONTINUOUS_HIGH:
-    case CMD_CONTINUOUS_HIGH2:
+    case MODE_CONTINUOUS_HIGH:
+    case MODE_CONTINUOUS_HIGH2:
       if (busSend(getMode())) return getLastResult();
       wait(180);
       break;
-    case CMD_CONTINUOUS_LOW:
+    case MODE_CONTINUOUS_LOW:
       if (busSend(getMode())) return getLastResult();
       wait(24);
       break;

@@ -26,17 +26,6 @@
 #ifndef GBJ_BH1750FVI_H
 #define GBJ_BH1750FVI_H
 
-#if defined(__AVR__)
-  #if ARDUINO >= 100
-    #include <Arduino.h>
-  #else
-    #include <WProgram.h>
-  #endif
-  #include <inttypes.h>
-#elif defined(PARTICLE)
-  #include <Particle.h>
-#endif
-
 #include "gbj_twowire.h"
 
 
@@ -47,6 +36,15 @@ public:
 // Public constants
 //------------------------------------------------------------------------------
 static const String VERSION;
+enum Modes
+{
+  MODE_CONTINUOUS_HIGH = 0x10,  // 1 lx / 120 ms
+  MODE_CONTINUOUS_HIGH2 = 0x11,  // 0.5 lx / 120 ms
+  MODE_CONTINUOUS_LOW = 0x13,  // 4 lx / 16 ms
+  MODE_ONETIME_HIGH = 0x20,  // 1 lx / 120 ms
+  MODE_ONETIME_HIGH2 = 0x21,  // 0.5 lx / 120 ms
+  MODE_ONETIME_LOW = 0x23,  // 4 lx / 16 ms
+};
 
 
 //------------------------------------------------------------------------------
@@ -55,8 +53,9 @@ static const String VERSION;
 /*
   Constructor taken from parent class.
 */
-gbj_bh1750fvi(uint32_t clockSpeed = CLOCK_100KHZ, bool busStop = true) \
-: gbj_twowire(clockSpeed, busStop) {};
+gbj_bh1750fvi(uint32_t clockSpeed = CLOCK_100KHZ, bool busStop = true, \
+  uint8_t pinSDA = 4, uint8_t pinSCL = 5) \
+: gbj_twowire(clockSpeed, busStop, pinSDA, pinSCL) {};
 
 
 /*
@@ -76,13 +75,13 @@ gbj_bh1750fvi(uint32_t clockSpeed = CLOCK_100KHZ, bool busStop = true) \
 
   mode - Measurement mode from possible listed ones.
          - Data type: non-negative integer
-         - Default value: CMD_CONTINUOUS_HIGH
-         - Limited range: CMD_CONTINUOUS_HIGH ~ CMD_ONETIME_LOW
+         - Default value: MODE_CONTINUOUS_HIGH
+         - Limited range: MODE_CONTINUOUS_HIGH ~ MODE_ONETIME_LOW
 
   RETURN:
   Result code.
 */
-uint8_t begin(uint8_t address = ADDRESS_LOW, uint8_t mode = CMD_CONTINUOUS_HIGH);
+uint8_t begin(uint8_t address = ADDRESS_LOW, uint8_t mode = MODE_CONTINUOUS_HIGH);
 
 
 /*
@@ -161,22 +160,16 @@ private:
 //------------------------------------------------------------------------------
 // Private constants
 //------------------------------------------------------------------------------
-enum Commands
-{
-  CMD_CONTINUOUS_HIGH = 0x10,  // 1 lx / 120 ms
-  CMD_CONTINUOUS_HIGH2 = 0x11,  // 0.5 lx / 120 ms
-  CMD_CONTINUOUS_LOW = 0x13,  // 4 lx / 16 ms
-  CMD_ONETIME_HIGH = 0x20,  // 1 lx / 120 ms
-  CMD_ONETIME_HIGH2 = 0x21,  // 0.5 lx / 120 ms
-  CMD_ONETIME_LOW = 0x23,  // 4 lx / 16 ms
-  CMD_POWER_DOWN = 0xE3,  // No active state
-  CMD_POWER_ON = 0xE5,  // Wating for measurment command
-  CMD_RESET = 0xFE,  // Reset data register value
-};
 enum Addresses
 {
   ADDRESS_LOW = 0x23, // ADDR <= 0.3Vcc or floating
   ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
+};
+enum Commands
+{
+  CMD_POWER_DOWN = 0xE3,  // No active state
+  CMD_POWER_ON = 0xE5,  // Wating for measurement command
+  CMD_RESET = 0xFE,  // Reset data register value
 };
 
 
