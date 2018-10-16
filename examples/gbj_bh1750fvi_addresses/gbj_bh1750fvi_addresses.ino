@@ -46,6 +46,10 @@ void errorHandler()
       Serial.println("Bad address");
       break;
 
+    case gbj_twowire::ERROR_PINS:
+      Serial.println("Bad pins");
+      break;
+
     case gbj_bh1750fvi::ERROR_NACK_OTHER:
       Serial.println("Other error");
       break;

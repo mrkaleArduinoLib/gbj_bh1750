@@ -2,15 +2,20 @@
 # gbjBH1750FVI
 Library for digital ambient light sensor BH1750FVI with two-wire (I2C) bus interface usually on board GY-302. Library enables changing address of the sensor dynamically, if ADDR pin of the sensor is connected to a microcontroller pin and changed programmatically accordingly as well as changing measurement mode.
 
-#### Particle hardware configuration
+#### Particle - Photon hardware configuration
 - Connect microcontroller's pin `D0` to sensor's pin **SDA** (Serial Data).
 - Connect microcontroller's pin `D1` to sensor's pin **SCL** (Serial Clock).
 - Connect microcontroller's pin `D2` to sensor's pin **ADDR** (Addressing) in order to set its address programmatically.
 
-#### Arduino UNO hardware configuration
+#### AVR - Arduino UNO hardware configuration
 - Connect microcontroller's pin `A4` to sensor's pin **SDA** (Serial Data).
 - Connect microcontroller's pin `A5` to sensor's pin **SCL** (Serial Clock).
 - Connect microcontroller's pin `D2` to sensor's pin **ADDR** (Addressing) in order to set its address programmatically.
+
+#### Espressif - ESP8266, ESP32 default hardware configuration
+- Connect microcontroller's pin `D2` to sensor's pin **SDA** (Serial Data).
+- Connect microcontroller's pin `D1` to sensor's pin **SCL** (Serial Clock).
+- Connect microcontroller's pin `D0` to sensor's pin **ADDR** (Addressing) in order to set its address programmatically.
 
 
 <a id="credit"></a>

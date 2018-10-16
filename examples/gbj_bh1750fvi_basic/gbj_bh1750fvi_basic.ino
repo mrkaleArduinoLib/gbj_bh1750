@@ -38,6 +38,10 @@ void errorHandler()
       Serial.println("Bad address");
       break;
 
+    case gbj_twowire::ERROR_PINS:
+      Serial.println("Bad pins");
+      break;
+
     case gbj_bh1750fvi::ERROR_NACK_OTHER:
       Serial.println("Other error");
       break;
@@ -63,18 +67,14 @@ void setup()
     errorHandler();
     return;
   }
-  else
-  {
-    Serial.print("Address: 0x");
-    Serial.println(Light.getAddress(), HEX);
-    Serial.print("Mode: 0x");
-    Serial.println(Light.getMode(), HEX);
-    Serial.print("Clock: ");
-    Serial.print(Light.getBusClock() / 1000);
-    Serial.println(" kHz");
-    Serial.println("---");
-    Serial.println("Light in lux:");
-  }
+  Serial.println(Light.getAddress(), HEX);
+  Serial.print("Mode: 0x");
+  Serial.println(Light.getMode(), HEX);
+  Serial.print("Clock: ");
+  Serial.print(Light.getBusClock() / 1000);
+  Serial.println(" kHz");
+  Serial.println("---");
+  Serial.println("Light in lux:");
 }
 
 

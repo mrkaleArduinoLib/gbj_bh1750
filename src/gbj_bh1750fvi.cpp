@@ -4,6 +4,7 @@ const String gbj_bh1750fvi::VERSION = "GBJ_BH1750FVI 1.0.0";
 
 uint8_t gbj_bh1750fvi::begin(uint8_t address, uint8_t mode)
 {
+  if (gbj_twowire::begin()) return getLastResult();
   if (setAddress(address)) return getLastResult();
   if (powerOn()) return getLastResult();
   if (setMode(mode)) return getLastResult();
