@@ -36,6 +36,11 @@ public:
 // Public constants
 //------------------------------------------------------------------------------
 static const String VERSION;
+enum Addresses
+{
+  ADDRESS_LOW = 0x23, // ADDR <= 0.3Vcc or floating
+  ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
+};
 enum Modes
 {
   MODE_CONTINUOUS_HIGH = 0x10,  // 1 lx / 120 ms
@@ -160,11 +165,6 @@ private:
 //------------------------------------------------------------------------------
 // Private constants
 //------------------------------------------------------------------------------
-enum Addresses
-{
-  ADDRESS_LOW = 0x23, // ADDR <= 0.3Vcc or floating
-  ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
-};
 enum Commands
 {
   CMD_POWER_DOWN = 0xE3,  // No active state
