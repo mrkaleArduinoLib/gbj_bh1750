@@ -67,6 +67,7 @@ void setup()
     errorHandler();
     return;
   }
+  Serial.print("Address: 0x");
   Serial.println(Light.getAddress(), HEX);
   Serial.print("Mode: 0x");
   Serial.println(Light.getMode(), HEX);
