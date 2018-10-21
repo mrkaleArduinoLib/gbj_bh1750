@@ -3,7 +3,7 @@
   Demonstration of the setting sensor's address by ADDR pin.
 
   DESCRIPTION:
-  The sketch sets address of the light sensor according to the current state
+  The sketch sets address of the Sensor sensor according to the current state
   of the ADDR pin.
   - Connect sensor's pins to microcontroller's I2C bus as described in README.md
     for used platform accordingly.
@@ -29,18 +29,18 @@ const unsigned char PIN_BH1750FVI_ADDR = D0;  // Address pin of the sensor
 const unsigned char PIN_BH1750FVI_ADDR = 7;  // Address pin of the sensor
 #endif
 
-gbj_bh1750fvi Light = gbj_bh1750fvi();
-// gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
-// gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_400KHZ);
+gbj_bh1750fvi Sensor = gbj_bh1750fvi();
+// gbj_bh1750fvi Sensor = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
+// gbj_bh1750fvi Sensor = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_400KHZ);
 
 
 void errorHandler()
 {
-  if (Light.isSuccess()) return;
+  if (Sensor.isSuccess()) return;
   Serial.print("Error: ");
-  Serial.print(Light.getLastResult());
+  Serial.print(Sensor.getLastResult());
   Serial.print(" - ");
-  switch (Light.getLastResult())
+  switch (Sensor.getLastResult())
   {
     case gbj_bh1750fvi::ERROR_ADDRESS:
       Serial.println("Bad address");
@@ -73,36 +73,36 @@ void setup()
   pinMode(PIN_BH1750FVI_ADDR, OUTPUT);
   digitalWrite(PIN_BH1750FVI_ADDR, LOW);
 
-  if (Light.begin(digitalRead(PIN_BH1750FVI_ADDR)))
+  if (Sensor.begin(digitalRead(PIN_BH1750FVI_ADDR)))
   {
     errorHandler();
     return;
   }
   else
   {
-    Serial.println("Address/Pin/Light:");
+    Serial.println("Address/Pin/Sensor:");
   }
 }
 
 
 void loop()
 {
-  if (Light.isError()) return;
+  if (Sensor.isError()) return;
   // Change sensor's address
   digitalWrite(PIN_BH1750FVI_ADDR, digitalRead(PIN_BH1750FVI_ADDR) ^ 1);
-  Light.setAddress(digitalRead(PIN_BH1750FVI_ADDR));
+  Sensor.setAddress(digitalRead(PIN_BH1750FVI_ADDR));
   Serial.print("0x");
-  Serial.print(Light.getAddress(), HEX);
+  Serial.print(Sensor.getAddress(), HEX);
   Serial.print("/");
   Serial.print(digitalRead(PIN_BH1750FVI_ADDR) == HIGH ? "HIGH" : "LOW");
   Serial.print("/");
-  if (Light.isError())
+  if (Sensor.isError())
   {
     errorHandler();
   }
   else
   {
-    Serial.println(Light.measureLight());
+    Serial.println(Sensor.measureSensor());
   }
   delay(PERIOD_MEASURE);
 }
