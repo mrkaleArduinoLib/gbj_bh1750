@@ -26,25 +26,56 @@ gbj_bh1750fvi Sensor = gbj_bh1750fvi();
 // gbj_bh1750fvi Sensor = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_400KHZ);
 
 
-void errorHandler()
+void errorHandler(String location)
 {
   if (Sensor.isSuccess()) return;
-  Serial.print("Error: ");
+  Serial.print(location);
+  Serial.print(" - Error: ");
   Serial.print(Sensor.getLastResult());
   Serial.print(" - ");
   switch (Sensor.getLastResult())
   {
+    // General
     case gbj_bh1750fvi::ERROR_ADDRESS:
-      Serial.println("Bad address");
+      Serial.println("ERROR_ADDRESS");
       break;
 
-    case gbj_twowire::ERROR_PINS:
-      Serial.println("Bad pins");
+    case gbj_bh1750fvi::ERROR_PINS:
+      Serial.println("ERROR_PINS");
+      break;
+
+    // Arduino, Esspressif specific
+#if defined(__AVR__) || defined(ESP8266) || defined(ESP32)
+    case gbj_bh1750fvi::ERROR_BUFFER:
+      Serial.println("ERROR_BUFFER");
+      break;
+
+    case gbj_bh1750fvi::ERROR_NACK_DATA:
+      Serial.println("ERROR_PINS");
       break;
 
     case gbj_bh1750fvi::ERROR_NACK_OTHER:
-      Serial.println("Other error");
+      Serial.println("ERROR_NACK_OTHER");
       break;
+
+    // Particle specific
+#elif defined(PARTICLE)
+    case gbj_bh1750fvi::ERROR_BUSY:
+      Serial.println("ERROR_BUSY");
+      break;
+
+    case gbj_bh1750fvi::ERROR_END:
+      Serial.println("ERROR_END");
+      break;
+
+    case gbj_bh1750fvi::ERROR_TRANSFER:
+      Serial.println("ERROR_TRANSFER");
+      break;
+
+    case gbj_bh1750fvi::ERROR_TIMEOUT:
+      Serial.println("ERROR_TIMEOUT");
+      break;
+#endif
 
     default:
       Serial.println("Uknown error");
@@ -64,7 +95,7 @@ void setup()
 
   if (Sensor.begin())
   {
-    errorHandler();
+    errorHandler("Begin");
     return;
   }
   Serial.print("Address: 0x");

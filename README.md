@@ -133,8 +133,8 @@ The constructor cannot return [a result or error code](#constants) directly, how
 The method has all arguments defaulted and calling without any parameters is equivalent to the calling with all arguments set by corresponding constant with default value:
 
 ```cpp
-  gbj_bh1750fvi Light = gbj_bh1750fvi(); // It is equivalent to
-  gbj_bh1750fvi Light = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
+  gbj_bh1750fvi Sensor = gbj_bh1750fvi(); // It is equivalent to
+  gbj_bh1750fvi Sensor = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
 ```
 
 [Back to interface](#interface)
@@ -173,18 +173,18 @@ Some of [result or error codes](#constants).
 The method has all arguments defaulted and calling without any parameters is equivalent to the calling with all arguments set by corresponding constant with default value:
 
 ``` cpp
-gbj_bh1750fvi Light = gbj_bh1750fvi();
+gbj_bh1750fvi Sensor = gbj_bh1750fvi();
 setup()
 {
-    Light.begin();  // It is equivalent to
-    Light.begin(gbj_bh1750fvi::ADDRESS_LOW, gbj_bh1750fvi::MODE_CONTINUOUS_HIGH);
+    Sensor.begin();  // It is equivalent to
+    Sensor.begin(gbj_bh1750fvi::ADDRESS_LOW, gbj_bh1750fvi::MODE_CONTINUOUS_HIGH);
 }
 ```
 
 If some argument after some defaulted arguments should have a specific value, use corresponding constants in place of those defaulted arguments, e.g.,
 
 ``` cpp
-Light.begin(gbj_bh1750fvi::ADDRESS_HIGH, gbj_bh1750fvi::MODE_ONETIME_LOW);      // Specific measurement mode
+Sensor.begin(gbj_bh1750fvi::ADDRESS_HIGH, gbj_bh1750fvi::MODE_ONETIME_LOW);      // Specific measurement mode
 ```
 
 Typical usage is just with default values without any arguments.
@@ -284,8 +284,8 @@ Some of [result or error codes](#constants).
 
 #### Example
 ```cpp
-Light.setAddress(digitalRead(PIN_BH1750FVI_ADDR));
-Light.setAddress(gbj_bh1750fvi::ADDRESS_HIGH);
+Sensor.setAddress(digitalRead(PIN_BH1750FVI_ADDR));
+Sensor.setAddress(gbj_bh1750fvi::ADDRESS_HIGH);
 ```
 
 #### See also
