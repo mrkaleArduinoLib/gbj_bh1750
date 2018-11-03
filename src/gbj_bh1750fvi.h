@@ -38,7 +38,7 @@ public:
 static const String VERSION;
 enum Addresses
 {
-  ADDRESS_LOW = 0x23, // ADDR <= 0.3Vcc or floating
+  ADDRESS_LOW = 0x23,  // ADDR <= 0.3Vcc or floating
   ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
 };
 enum Modes
