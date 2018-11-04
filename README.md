@@ -291,8 +291,6 @@ Sensor.setAddress(gbj_bh1750fvi::ADDRESS_HIGH);
 #### See also
 [begin()](#begin)
 
-[getAddress()](#getAddress)
-
 [Back to interface](#interface)
 
 
