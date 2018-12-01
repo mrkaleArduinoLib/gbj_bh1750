@@ -1,10 +1,10 @@
 {
-  "name": "gbjBH1750FVI",
+  "name": "gbjBH1750",
   "keywords": "sensors, light",
   "description": "Library for the ambient light sensor BH1750FVI on board GY-302. The library communicates with the sensor on two-wire (I2C) bus. It allows to set address and measurement mode of the sensor statically at start or dynamically with help of setters.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrkaleArduinoLib/gbj_bh1750fvi.git"
+    "url": "https://github.com/mrkaleArduinoLib/gbj_bh1750.git"
   },
   "version": "1.0.0",
   "frameworks": "arduino",

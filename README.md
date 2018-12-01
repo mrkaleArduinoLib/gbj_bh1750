@@ -1,6 +1,6 @@
 <a id="library"></a>
-# gbjBH1750FVI
-Library for digital ambient light sensor BH1750FVI with two-wire (I2C) bus interface usually on board GY-302. Library enables changing address of the sensor dynamically, if ADDR pin of the sensor is connected to a microcontroller pin and changed programmatically accordingly as well as changing measurement mode.
+# gbjBH1750
+Library for digital ambient light sensor bh1750 with two-wire (I2C) bus interface usually on board GY-302. Library enables changing address of the sensor dynamically, if ADDR pin of the sensor is connected to a microcontroller pin and changed programmatically accordingly as well as changing measurement mode.
 - Sensor address is `0x23` for ADDR pin state with voltage <= 0.3 Vcc (digital LOW) or floating.
 - Sensor address is `0x5C` for ADDR pin state with voltage >= 0.7 Vcc (digital HIGH).
 
@@ -39,37 +39,37 @@ Library has been inspired by the *Christopher Laws*'s library *BH1750-master ver
 - **TwoWire**: I2C system library loaded from the file *Wire.h*.
 
 #### Custom Libraries
-- **gbjTwoWire**: I2C custom library loaded from the file *gbj_twowire.h*. The library [gbjBH1750FVI](#library) inherits common bus functionality from this library.
+- **gbjTwoWire**: I2C custom library loaded from the file *gbj_twowire.h*. The library [gbjbh1750](#library) inherits common bus functionality from this library.
 
 
 <a id="constants"></a>
 ## Constants
 All constants are embedded into the class as static ones including result and error codes except constant defining hardware keypad equipment.
 
-- **gbj\_bh1750fvi::VERSION**: Name and semantic version of the library.
+- **gbj\_bh1750::VERSION**: Name and semantic version of the library.
 
 Error codes as well as result code are inherited from the parent library [gbjTwoWire](#dependency).
 
 <a id="addresses"></a>
 #### Measurement modes
-- **gbj\_bh1750fvi::ADDRESS\_LOW**: Sensor's address at floating or grounded ADDR pin (0x23).
-- **gbj\_bh1750fvi::ADDRESS\_HIGH**: Sensor's address at floating or grounded ADDR pin (0x5C).
+- **gbj\_bh1750::ADDRESS\_LOW**: Sensor's address at floating or grounded ADDR pin (0x23).
+- **gbj\_bh1750::ADDRESS\_HIGH**: Sensor's address at floating or grounded ADDR pin (0x5C).
 
 <a id="modes"></a>
 #### Measurement modes
-- **gbj\_bh1750fvi::CONTINUOUS\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms.
-- **gbj\_bh1750fvi::CONTINUOUS\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms.
-- **gbj\_bh1750fvi::CONTINUOUS\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms.
-- **gbj\_bh1750fvi::ONETIME\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
-- **gbj\_bh1750fvi::ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
-- **gbj\_bh1750fvi::ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
+- **gbj\_bh1750::CONTINUOUS\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms.
+- **gbj\_bh1750::CONTINUOUS\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms.
+- **gbj\_bh1750::CONTINUOUS\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms.
+- **gbj\_bh1750::ONETIME\_HIGH**: Start measurement at 1 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
+- **gbj\_bh1750::ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
+- **gbj\_bh1750::ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
 
 
 <a id="interface"></a>
 ## Interface
 
 #### Main
-- [gbj_bh1750fvi()](#gbj_bh1750fvi)
+- [gbj_bh1750()](#gbj_bh1750)
 - [begin()](#begin)
 - [powerOn()](#power)
 - [powerDown()](#power)
@@ -89,21 +89,21 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 Other possible setters and getters are inherited from the parent library [gbjTwoWire](#dependency) and described there.
 
 
-<a id="gbj_bh1750fvi"></a>
-## gbj_bh1750fvi()
+<a id="gbj_bh1750"></a>
+## gbj_bh1750()
 #### Description
 The library does not need special constructor and destructor, so that the inherited ones are good enough and there is no need to define them in the library, just use it with default or specific parameters as defined at constructor of parent library [gbjTwoWire](#dependency).
 - Constructor sets parameters specific to the two-wire bus in general.
 - All the constructor parameters can be changed dynamically with corresponding setters later in a sketch.
 
 #### Syntax
-    gbj_bh1750fvi(uint32_t clockSpeed, bool busStop, uint8_t pinSDA, uint8_t pinSCL);
+    gbj_bh1750(uint32_t clockSpeed, bool busStop, uint8_t pinSDA, uint8_t pinSCL);
 
 #### Parameters
 <a id="prm_busClock"></a>
 - **clockSpeed**: Two-wire bus clock frequency in Hertz. If the clock is not from enumeration, it fallbacks to 100 kHz.
-  - *Valid values*: gbj\_bh1750fvi::CLOCK\_100KHZ, gbj\_bh1750fvi::CLOCK\_400KHZ
-  - *Default value*: gbj\_bh1750fvi::CLOCK\_100KHZ
+  - *Valid values*: gbj\_bh1750::CLOCK\_100KHZ, gbj\_bh1750::CLOCK\_400KHZ
+  - *Default value*: gbj\_bh1750::CLOCK\_100KHZ
 
 
 <a id="prm_busStop"></a>
@@ -133,8 +133,8 @@ The constructor cannot return [a result or error code](#constants) directly, how
 The method has all arguments defaulted and calling without any parameters is equivalent to the calling with all arguments set by corresponding constant with default value:
 
 ```cpp
-  gbj_bh1750fvi Sensor = gbj_bh1750fvi(); // It is equivalent to
-  gbj_bh1750fvi Sensor = gbj_bh1750fvi(gbj_bh1750fvi::CLOCK_100KHZ, true, D2, D1);
+  gbj_bh1750 Sensor = gbj_bh1750(); // It is equivalent to
+  gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
 ```
 
 [Back to interface](#interface)
@@ -154,16 +154,16 @@ The method takes, sanitizes, and stores sensor parameters to a class instance ob
 #### Parameters
 <a id="prm_address"></a>
 - **address**: One of two possible 7 bit addresses of the sensor or state of the ADDR pin.
-  - *Valid values*: [gbj\_bh1750fvi::ADDRESS\_LOW](#addresses), [gbj\_bh1750fvi::ADDRESS\_HIGH](#addresses), or pin state **HIGH** or **LOW**.
-  - *Default value*: [gbj\_bh1750fvi::ADDRESS\_LOW](#addresses)
+  - *Valid values*: [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses), or pin state **HIGH** or **LOW**.
+  - *Default value*: [gbj\_bh1750::ADDRESS\_LOW](#addresses)
     - The default values is set to address corresponding to not wired (floating) ADDR pin, which is equivalent to the connection to the ground.
     - If input value is none of expected ones, the method fallbacks it to default address.
     - In fact, the ADDR pin is not aimed to utilize dynamic changing the device address, but to enable using two sensors on one two-wire bus.
 
 <a id="prm_mode"></a>
 - **mode**: Measurement mode from possible listed ones.
-  - *Valid values*: [gbj\_bh1750fvi::MODE\_CONTINUOUS\_HIGH](#modes) ~ [gbj\_bh1750fvi::MODE\_ONETIME\_LOW](#modes)
-  - *Default value*: [gbj\_bh1750fvi::MODE\_CONTINUOUS\_HIGH](#modes)
+  - *Valid values*: [gbj\_bh1750::MODE\_CONTINUOUS\_HIGH](#modes) ~ [gbj\_bh1750::MODE\_ONETIME\_LOW](#modes)
+  - *Default value*: [gbj\_bh1750::MODE\_CONTINUOUS\_HIGH](#modes)
     - If input value is none of expected ones, the method fallbacks it to default measuring mode.
 
 #### Returns
@@ -173,18 +173,18 @@ Some of [result or error codes](#constants).
 The method has all arguments defaulted and calling without any parameters is equivalent to the calling with all arguments set by corresponding constant with default value:
 
 ``` cpp
-gbj_bh1750fvi Sensor = gbj_bh1750fvi();
+gbj_bh1750 Sensor = gbj_bh1750();
 setup()
 {
     Sensor.begin();  // It is equivalent to
-    Sensor.begin(gbj_bh1750fvi::ADDRESS_LOW, gbj_bh1750fvi::MODE_CONTINUOUS_HIGH);
+    Sensor.begin(gbj_bh1750::ADDRESS_LOW, gbj_bh1750::MODE_CONTINUOUS_HIGH);
 }
 ```
 
 If some argument after some defaulted arguments should have a specific value, use corresponding constants in place of those defaulted arguments, e.g.,
 
 ``` cpp
-Sensor.begin(gbj_bh1750fvi::ADDRESS_HIGH, gbj_bh1750fvi::MODE_ONETIME_LOW);      // Specific measurement mode
+Sensor.begin(gbj_bh1750::ADDRESS_HIGH, gbj_bh1750::MODE_ONETIME_LOW);      // Specific measurement mode
 ```
 
 Typical usage is just with default values without any arguments.
@@ -269,7 +269,7 @@ Current ambient light intensity in the range 0 ~ 54612 lux or unreachable value 
 ## setAddress()
 #### Description
 The method overrides the method of the parent class by transforming and sanitizing input value, which can be a state of the ADDR pin.
-- If the input address is an address value, it should be just one of valid addresses [gbj\_bh1750fvi::ADDRESS\_LOW](#addresses), [gbj\_bh1750fvi::ADDRESS\_HIGH](#addresses).
+- If the input address is an address value, it should be just one of valid addresses [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses).
 - If the input address is the ADDR pin state, it can be either HIGH or LOW.
 - In fact, the ADDR pin is not aimed to utilize dynamic changing the device address, but to enable using two sensors on one two-wire bus.
 
@@ -284,8 +284,8 @@ Some of [result or error codes](#constants).
 
 #### Example
 ```cpp
-Sensor.setAddress(digitalRead(PIN_BH1750FVI_ADDR));
-Sensor.setAddress(gbj_bh1750fvi::ADDRESS_HIGH);
+Sensor.setAddress(digitalRead(PIN_bh1750_ADDR));
+Sensor.setAddress(gbj_bh1750::ADDRESS_HIGH);
 ```
 
 #### See also

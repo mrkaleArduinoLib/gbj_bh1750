@@ -5,7 +5,7 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-gbj_bh1750fvi	KEYWORD1
+gbj_bh1750	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
