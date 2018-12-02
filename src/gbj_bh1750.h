@@ -147,38 +147,56 @@ uint8_t reset();
 uint8_t measureLight();
 
 
+/*
+  Measure and return ambient light intensity in lux at particular accuracy.
+
+  DESCRIPTION:
+
+  PARAMETERS: none
+
+  RETURN:
+  Ambient light intensity in lux.
+*/
+inline float measureLightTyp() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightTyp() : 0.0; };
+inline float measureLightMax() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightMax() : 0.0; };
+inline float measureLightMin() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightMin() : 0.0; };
+
+
 //------------------------------------------------------------------------------
 // Public setters - they usually return result code.
 //------------------------------------------------------------------------------
 uint8_t setAddress(uint8_t address);
 uint8_t setMode(uint8_t mode);
-inline void setTimingMax() { _status.maxSendDelay = true; };
-inline void setTimingTyp() { _status.maxSendDelay = false; };
-inline uint8_t setSensitivityVal(uint8_t mtreg);
-inline uint8_t setSensitivityTyp() { return setSensitivityVal(MTREG_DEF); };
-inline uint8_t setSensitivityMin() { return setSensitivityVal(MTREG_MIN); };
-inline uint8_t setSensitivityMax() { return setSensitivityVal(MTREG_MAX); };
+inline void setTimingMax() { _status.flagMaxMeasurementTime = true; };
+inline void setTimingTyp() { _status.flagMaxMeasurementTime = false; };
+uint8_t setResolutionVal(uint8_t mtreg);
+inline uint8_t setResolutionTyp() { return setResolutionVal(MTREG_TYP); };
+inline uint8_t setResolutionMin() { return setResolutionVal(MTREG_MIN); };
+inline uint8_t setResolutionMax() { return setResolutionVal(MTREG_MAX); };
 
 
 //------------------------------------------------------------------------------
 // Public getters
 //------------------------------------------------------------------------------
 inline uint8_t getMode() { return _status.mode; };
-inline bool getTimingMax() { return _status.maxSendDelay; };
-inline bool getTimingTyp() { return !_status.maxSendDelay; };
-inline uint16_t getConversionTime() { return _status.conversionTime; };
-inline uint16_t getConversionTimeTyp() { return _status.conversionTimeTyp; };
-inline uint16_t getConversionTimeMax() { return _status.conversionTimeMax; };
+inline bool getTimingMax() { return _status.flagMaxMeasurementTime; };
+inline bool getTimingTyp() { return !_status.flagMaxMeasurementTime; };
+inline uint16_t getMeasurementTime() { return _status.measurementTime; };
+inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; };
+inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; };
 inline uint16_t getLightResult() { return _light.result; };  // Recent value of data register
-inline float getLight() { return _light.typical; };  // Recently measured light value at typical accuracy
+inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy
 inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy
 inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy
 inline float getSensitivityTyp() { return 100.0 / _status.senseCoef / (float) ACCURACY_TYP; };
 inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };
 inline float getSensitivityMax() { return 100.0 / _status.senseCoef / (float) ACCURACY_MIN; };
-inline float getAccuracy() { return (float) ACCURACY_TYP / 100.0; };
+inline float getAccuracyTyp() { return (float) ACCURACY_TYP / 100.0; };
 inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };
 inline float getAccuracyMax() { return (float) ACCURACY_MAX / 100.0; };
+inline float getResolutionTyp() { return (float) ACCURACY_TYP / 100.0 * _status.senseCoef; };
+inline float getResolutionMin() { return (float) ACCURACY_MIN / 100.0 * _status.senseCoef; };
+inline float getResolutionMax() { return (float) ACCURACY_MAX / 100.0 * _status.senseCoef; };
 
 
 private:
@@ -208,7 +226,7 @@ enum MeasurementAccuracy  // In fixed float format with 2 fraction digits
 };
 enum MeasurementTiming
 {
-  MTREG_DEF = 69,  // Default value of measurement time register
+  MTREG_TYP = 69,  // Typical value of measurement time register
   MTREG_MIN = 31,  // Minimal value of measurement time register
   MTREG_MAX = 254,  // Maximal value of measurement time register
 };
@@ -222,10 +240,10 @@ struct
   uint8_t mode;  // Current measurement mode of the sensor
   uint8_t mtreg;  // Current value of measurement time register
   float senseCoef;  // Sensitivity coeficient
-  bool maxSendDelay = true;  // Flag about using maximal conversion times
-  uint16_t conversionTime;  // In milliseconds
-  uint16_t conversionTimeTyp;  // In milliseconds
-  uint16_t conversionTimeMax;  // In milliseconds
+  bool flagMaxMeasurementTime;
+  uint16_t measurementTime;  // In milliseconds
+  uint16_t measurementTimeTyp;  // In milliseconds
+  uint16_t measurementTimeMax;  // In milliseconds
 } _status;  // Initially set to default values
 struct
 {
@@ -240,7 +258,7 @@ struct
 // Private methods
 //------------------------------------------------------------------------------
 void calculateLight();
-void setDelaySend();
+void setMeasurementTime();
 float calculateSenseCoef();  // Counts per lux
 
 };

@@ -83,6 +83,7 @@ void errorHandler(String location)
   }
 }
 
+
 String getModeName()
 {
   String measurementType;
@@ -110,6 +111,7 @@ String getModeName()
   return measurementType;
 }
 
+
 void setup()
 {
   Serial.begin(9600);
@@ -127,7 +129,7 @@ void setup()
   Serial.println("Clock: " + String(Sensor.getBusClock() / 1000) + " kHz");
   Serial.println("Address: 0x" + String(Sensor.getAddress(), HEX));
   Serial.println("Accuracy (min/typ/max): " + String(Sensor.getAccuracyMin()) \
-  + "/" + String(Sensor.getAccuracy()) + "/" + String(Sensor.getAccuracyMax())\
+  + "/" + String(Sensor.getAccuracyTyp()) + "/" + String(Sensor.getAccuracyMax())\
   + " bitCount/lux");
   Serial.println("---");
   // Low mode
@@ -135,74 +137,95 @@ void setup()
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
     Serial.println("---");
 
   // High mode - typical sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH);
-  Sensor.setSensitivityTyp();
+  Sensor.setResolutionTyp();
   Serial.println("Mode: " + getModeName() + " - Typical Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
     Serial.println("---");
 
   // High mode - minimal sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH);
-  Sensor.setSensitivityMin();
+  Sensor.setResolutionMin();
   Serial.println("Mode: " + getModeName() + " - Minimal Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
   // High mode - maximal sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH);
-  Sensor.setSensitivityMax();
+  Sensor.setResolutionMax();
   Serial.println("Mode: " + getModeName() + " - Maximal Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
   // Double high mode - typical sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH2);
-  Sensor.setSensitivityTyp();
+  Sensor.setResolutionTyp();
   Serial.println("Mode: " + getModeName() + " - Typical Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
   // Double high mode - minimal sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH2);
-  Sensor.setSensitivityMin();
+  Sensor.setResolutionMin();
   Serial.println("Mode: " + getModeName() + " - Minimal Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
   // Double high mode - maximal sensitivity
   Sensor.setMode(gbj_bh1750::MODE_CONTINUOUS_HIGH2);
-  Sensor.setSensitivityMax();
+  Sensor.setResolutionMax();
   Serial.println("Mode: " + getModeName() + " - Maximal Sensitivity");
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
-  Serial.println("Conversion time (typ/max): " + String(Sensor.getConversionTimeTyp()) \
-    + "/" + String(Sensor.getConversionTimeMax()) + " ms");
+  Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
+    + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
+    + " bitCount/lux");
+  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+    + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
   Serial.println("END");

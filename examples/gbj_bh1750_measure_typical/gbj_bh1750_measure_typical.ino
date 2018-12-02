@@ -1,14 +1,14 @@
 /*
   NAME:
-  Demonstration of the setting sensor's address by ADDR pin.
+  Basic usage of gbjBH1750 library for ambient light measurement at typical
+  measurement accuracy.
 
   DESCRIPTION:
-  The sketch sets address of the Sensor sensor according to the current state
-  of the ADDR pin.
-  - Connect sensor's pins to microcontroller's I2C bus as described in README.md
-    for used platform accordingly.
-  - Connect some microcontroller's general digital pin to sensor's pin ADDR (Addressing)
-    in order to set its address programatically.
+  The sketch measures ambient light intensity with one determined BH1750 sensor.
+  - Connect sensor's pins to microcontroller's I2C bus or I2C default pins
+    as described in README.md for used platform accordingly.
+  - Leave ADDR pin floating or connected to GND in order to use default address.
+  - Change measurement mode for various measurement sensitivity.
 
   LICENSE:
   This program is free software; you can redistribute it and/or modify
@@ -17,17 +17,11 @@
   CREDENTIALS:
   Author: Libor Gabaj
 */
-#define SKETCH "GBJ_BH1750_ADDRESSES 1.0.0"
+#define SKETCH "GBJ_BH1750_MEASUREMENT_TYPICAL 1.0.0"
 
 #include "gbj_bh1750.h"
 
 const unsigned int PERIOD_MEASURE = 3000;  // Time in miliseconds between measurements
-
-#if defined(ESP8266) || defined(ESP32)
-const unsigned char PIN_BH1750_ADDR = D0;  // Address pin of the sensor
-#else
-const unsigned char PIN_BH1750_ADDR = 7;  // Address pin of the sensor
-#endif
 
 gbj_bh1750 Sensor = gbj_bh1750();
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
@@ -92,6 +86,34 @@ void errorHandler(String location)
 }
 
 
+String getModeName()
+{
+  String measurementType;
+  switch (Sensor.getMode())
+  {
+    case gbj_bh1750::MODE_CONTINUOUS_HIGH:
+      measurementType = "Continuous High";
+      break;
+    case gbj_bh1750::MODE_CONTINUOUS_HIGH2:
+      measurementType = "Continuous High Double";
+      break;
+    case gbj_bh1750::MODE_CONTINUOUS_LOW:
+      measurementType = "Continuous Low";
+      break;
+    case gbj_bh1750::MODE_ONETIME_HIGH:
+      measurementType = "Onetime High";
+      break;
+    case gbj_bh1750::MODE_ONETIME_HIGH2:
+      measurementType = "Onetime High Double";
+      break;
+    case gbj_bh1750::MODE_ONETIME_LOW:
+      measurementType = "Onetime Low";
+      break;
+  }
+  return measurementType;
+}
+
+
 void setup()
 {
   Serial.begin(9600);
@@ -100,42 +122,25 @@ void setup()
   Serial.println(gbj_twowire::VERSION);
   Serial.println(gbj_bh1750::VERSION);
   Serial.println("---");
-  // Set sensor's address pin
-  pinMode(PIN_BH1750_ADDR, OUTPUT);
-  digitalWrite(PIN_BH1750_ADDR, LOW);
 
-  if (Sensor.begin(digitalRead(PIN_BH1750_ADDR)))
+  if (Sensor.begin(gbj_bh1750::ADDRESS_FLOAT, gbj_bh1750::MODE_CONTINUOUS_HIGH))
   {
     errorHandler("Begin");
     return;
   }
-  else
-  {
-    Serial.println("Address/Pin/Light");
-  }
+  Serial.println("Accuracy: " + String(Sensor.getAccuracy()) + " bitCount/lux");
+  Serial.println("Mode: " + getModeName());
+  Serial.println("Sensitivity: " +String(Sensor.getSensitivityTyp()) + " lux/bitCount");
+  Serial.println("Resolution: " +String(Sensor.getResolutionTyp()) + " bitCount/lux");
+  Serial.println("Measurement time: " + String(Sensor.getMeasurementTime()) + " ms");
+  Serial.println("---");
+  Serial.println("Light in lux");
 }
 
 
 void loop()
 {
   if (Sensor.isError()) return;
-  // Change sensor's address
-  digitalWrite(PIN_BH1750_ADDR, digitalRead(PIN_BH1750_ADDR) ^ 1);
-  Sensor.setAddress(digitalRead(PIN_BH1750_ADDR));
-  Serial.print("0x" + String(Sensor.getAddress(), HEX) \
-    + "/" + (digitalRead(PIN_BH1750_ADDR) == HIGH ? "HIGH" : "LOW") \
-    + "/");
-  if (Sensor.isError())
-  {
-    errorHandler("Address");
-  }
-  else
-  {
-    if (Sensor.measureLight())
-    {
-      errorHandler("Measure");
-    }
-    Serial.println(Sensor.getLightTyp());
-  }
+  Serial.println(Sensor.measureLightTyp());
   delay(PERIOD_MEASURE);
 }

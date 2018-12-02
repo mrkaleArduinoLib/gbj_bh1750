@@ -41,7 +41,7 @@ void gbj_bh1750::calculateLight()
 
 float gbj_bh1750::calculateSenseCoef()
 {
-  _status.senseCoef = (float) _status.mtreg / (float) MTREG_DEF;
+  _status.senseCoef = (float) _status.mtreg / (float) MTREG_TYP;
   switch (getMode())
   {
     case MODE_CONTINUOUS_HIGH2:
@@ -53,10 +53,12 @@ float gbj_bh1750::calculateSenseCoef()
 }
 
 
-// Measure light intensity
 uint8_t gbj_bh1750::measureLight()
 {
-  if (busReceive((uint8_t *) &_light.result, sizeof(_light.result))) return getLastResult();
+  waitTimestampReceive();
+  uint8_t data[2];
+  if (busReceive(data, sizeof(data) / sizeof(data[0]))) return getLastResult();
+  _light.result = (data[0] << 8) | data[1];
   calculateLight();
   return getLastResult();
 }
@@ -86,48 +88,56 @@ uint8_t gbj_bh1750::setAddress(uint8_t address)
 }
 
 
-uint8_t gbj_bh1750::setSensitivityVal(uint8_t mtreg)
+uint8_t gbj_bh1750::setResolutionVal(uint8_t mtreg)
 {
   switch (getMode())
   {
     // Set to default at low resolution mode
     case MODE_CONTINUOUS_LOW:
     case MODE_ONETIME_LOW:
-      mtreg = MTREG_DEF;
+      mtreg = MTREG_TYP;
       break;
     default:
+      if (mtreg == 0) mtreg = MTREG_TYP;
       mtreg = constrain(mtreg, MTREG_MIN, MTREG_MAX);
       break;
   }
-  _status.mtreg = mtreg;
+  // Send to the buse at change only
+  if (_status.mtreg != mtreg)
+  {
+    _status.mtreg = mtreg;
+    uint8_t mtregByte = CMD_MTIME_HIGH | (_status.mtreg >> 5); // High 3 bits
+    if (busSend(mtregByte)) return getLastResult();
+    mtregByte = CMD_MTIME_LOW | (_status.mtreg & B11111); // Low 5 bits
+    if (busSend(mtregByte)) return getLastResult();
+    if (busSend(getMode())) return getLastResult();
+  }
   calculateSenseCoef();
-  setDelaySend();
-  uint8_t mtregByte = CMD_MTIME_HIGH | (_status.mtreg >> 5); // High 3 bits
-  if (busSend(mtregByte)) return getLastResult();
-  mtregByte = CMD_MTIME_LOW | (_status.mtreg & B11111); // Low 5 bits
-  return busSend(mtregByte);
+  setMeasurementTime();
+  setTimestampReceive();
+  return getLastResult();
 }
 
 
-void gbj_bh1750::setDelaySend()
+void gbj_bh1750::setMeasurementTime()
 {
-  uint8_t defaultConversionTimeTyp, defaultConversionTimeMax;
+  uint8_t defaultMeasurementTimeTyp, defaultMeasurementTimeMax;
   switch (getMode())
   {
     case MODE_CONTINUOUS_LOW:
     case MODE_ONETIME_LOW:
-      defaultConversionTimeTyp = TIMING_LOWRESMODE_TYP;
-      defaultConversionTimeMax = TIMING_LOWRESMODE_MAX;
+      defaultMeasurementTimeTyp = TIMING_LOWRESMODE_TYP;
+      defaultMeasurementTimeMax = TIMING_LOWRESMODE_MAX;
       break;
     default:
-      defaultConversionTimeTyp = TIMING_HIGHRESMODE_TYP;
-      defaultConversionTimeMax = TIMING_HIGHRESMODE_MAX;
+      defaultMeasurementTimeTyp = TIMING_HIGHRESMODE_TYP;
+      defaultMeasurementTimeMax = TIMING_HIGHRESMODE_MAX;
       break;
   }
-  _status.conversionTimeTyp = _status.senseCoef * defaultConversionTimeTyp;
-  _status.conversionTimeMax = _status.senseCoef * defaultConversionTimeMax;
-  _status.conversionTime = getTimingMax() ? _status.conversionTimeMax : _status.conversionTimeTyp;
-  gbj_twowire::setDelaySend(_status.conversionTime);
+  _status.measurementTimeTyp = _status.senseCoef * defaultMeasurementTimeTyp;
+  _status.measurementTimeMax = _status.senseCoef * defaultMeasurementTimeMax;
+  _status.measurementTime = getTimingMax() ? _status.measurementTimeMax : _status.measurementTimeTyp;
+  gbj_twowire::setDelayReceive(_status.measurementTime);
 }
 
 
@@ -146,16 +156,17 @@ uint8_t gbj_bh1750::setMode(uint8_t mode)
       mode = MODE_CONTINUOUS_HIGH;
       break;
   }
+  if (_status.mode == mode) return initLastResult();
   _status.mode = mode;
   switch (getMode())
   {
     case MODE_CONTINUOUS_LOW:
     case MODE_ONETIME_LOW:
-      if (setSensitivityTyp()) return getLastResult();
+      if (setResolutionTyp()) return getLastResult();
       break;
     default:
-      setDelaySend();
+      if (setResolutionVal(_status.mtreg)) return getLastResult();
       break;
   }
-  return busSend(getMode());
+  return getLastResult();
 }
