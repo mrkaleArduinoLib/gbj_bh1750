@@ -1,6 +1,6 @@
 <a id="library"></a>
 # gbjBH1750
-Library for digital ambient light sensor bh1750 with two-wire (I2C) bus interface usually on board GY-302. Library enables changing address of the sensor dynamically, if ADDR pin of the sensor is connected to a microcontroller pin and changed programmatically accordingly as well as changing measurement mode.
+Library for digital ambient light sensor BH1750 with two-wire (I2C) bus interface usually on board GY-302. Library enables changing address of the sensor dynamically, if ADDR pin of the sensor is connected to a microcontroller pin and changed programmatically accordingly as well as changing measurement mode.
 - Sensor address is `0x23` for ADDR pin state with voltage <= 0.3 Vcc (digital LOW) or floating.
 - Sensor address is `0x5C` for ADDR pin state with voltage >= 0.7 Vcc (digital HIGH).
 
@@ -52,8 +52,9 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 
 <a id="addresses"></a>
 #### Measurement modes
-- **gbj\_bh1750::ADDRESS\_LOW**: Sensor's address at floating or grounded ADDR pin (0x23).
-- **gbj\_bh1750::ADDRESS\_HIGH**: Sensor's address at floating or grounded ADDR pin (0x5C).
+- **gbj\_bh1750::ADDRESS\_LOW**: Sensor's address at grounded ADDR pin (0x23).
+- **gbj\_bh1750::ADDRESS\_FLOAT**: Sensor's address at floating ADDR pin (0x23). Always same as for grounded address pin, but present just for stress hardware configuration in a sketch.
+- **gbj\_bh1750::ADDRESS\_HIGH**: Sensor's address at ADDR pin connected to power voltage Vcc (0x5C).
 
 <a id="modes"></a>
 #### Measurement modes
@@ -64,6 +65,8 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 - **gbj\_bh1750::ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
 - **gbj\_bh1750::ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
 
+The library does no specific error codes. All are inherited from the parent class.
+
 
 <a id="interface"></a>
 ## Interface
@@ -72,19 +75,43 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 - [gbj_bh1750()](#gbj_bh1750)
 - [begin()](#begin)
 - [powerOn()](#power)
-- [powerDown()](#power)
+- [powerOff()](#power)
 - [reset()](#reset)
 - [measureLight()](#measureLight)
+- [measureLightTyp()](#measureLightValue)
+- [measureLightMin()](#measureLightValue)
+- [measureLightMax()](#measureLightValue)
 
 #### Setters
 - [setAddress()](#setAddress)
 - [setMode()](#setMode)
+- [setTimingTyp()](#setTiming)
+- [setTimingMax()](#setTiming)
+- [setResolutionVal()](#setResolutionVal)
+- [setResolutionTyp()](#setResolution)
+- [setResolutionMin()](#setResolution)
+- [setResolutionMax()](#setResolution)
 
 #### Getters
 - [getMode()](#getMode)
-- [getLight()](#getLight)
-- [getLightMSB()](#getLightByte)
-- [getLightLSB()](#getLightByte)
+- [getLightResult()](#getLightResult)
+- [getLightTyp()](#getLightValue)
+- [getLightMin()](#getLightValue)
+- [getLightMax()](#getLightValue)
+- [getTimingTyp()](#getTiming)
+- [getTimingMax()](#getTiming)
+- [getMeasurementTime()](#getMeasurementTime)
+- [getMeasurementTimeTyp()](#getMeasurementTime)
+- [getMeasurementTimeMax()](#getMeasurementTime)
+- [getResolutionTyp()](#getResolution)
+- [getResolutionMin()](#getResolution)
+- [getResolutionMax()](#getResolution)
+- [getSensitivityTyp()](#getSensitivity)
+- [getSensitivityMin()](#getSensitivity)
+- [getSensitivityMax()](#getSensitivity)
+- [getAccuracyTyp()](#getAccuracy)
+- [getAccuracyMin()](#getAccuracy)
+- [getAccuracyMax()](#getAccuracy)
 
 Other possible setters and getters are inherited from the parent library [gbjTwoWire](#dependency) and described there.
 
@@ -154,7 +181,7 @@ The method takes, sanitizes, and stores sensor parameters to a class instance ob
 #### Parameters
 <a id="prm_address"></a>
 - **address**: One of two possible 7 bit addresses of the sensor or state of the ADDR pin.
-  - *Valid values*: [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses), or pin state **HIGH** or **LOW**.
+  - *Valid values*: [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_FLOAT](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses), or pin state **HIGH** or **LOW**.
   - *Default value*: [gbj\_bh1750::ADDRESS\_LOW](#addresses)
     - The default values is set to address corresponding to not wired (floating) ADDR pin, which is equivalent to the connection to the ground.
     - If input value is none of expected ones, the method fallbacks it to default address.
@@ -199,7 +226,7 @@ Specific values of arguments can be set by corresponding [setters](#interface).
 
 
 <a id="power"></a>
-## powerOn(), powerDown()
+## powerOn(), powerOff()
 #### Description
 The particular method either activates (wakes up) or deactivates (sleeps down) a sensor.
 - In active state a sensor waits for the measurement command.
@@ -207,7 +234,7 @@ The particular method either activates (wakes up) or deactivates (sleeps down) a
 
 #### Syntax
     uint8_t powerOn();
-    uint8_t powerDown();
+    uint8_t powerOff();
 
 #### Parameters
 None
@@ -244,18 +271,45 @@ Some of [result or error codes](#constants).
 <a id="measureLight"></a>
 ## measureLight()
 #### Description
-The method measures the ambient light intensity in lux at 16-bit resolution with accuracy determined by measurement mode while uses the parameters set by either the method [begin()](#begin) or setters. The method stores the measured value in the class instance object for repeating retrieval without need to measure again.
-- Maximal light intensity value is 54612 lux, because of maximal unsigned integer value 65535 in the internal registers of the sensor and divided by measurement coefficient 1.2, i.e.,
-  `65535 / 1.2 = 54612.5` and truncating decimal part.
+The method measures the ambient light intensity and calculates it in lux at all measurement accuracies (typical, minimal, maximal) with resolution set before exactly or by measurement mode.
+- The method stores the measured and calculated values in the class instance object for repeating retrieval without need to measure again. Particular values can be obtain with corresponding getters.
+- The method is useful in a sketch when light intensity at all accuracies are utilized for its confidence interval.
 
 #### Syntax
-    uint16_t measureLight();
+    uint8_t measureLight();
 
 #### Parameters
 None
 
 #### Returns
-Current ambient light intensity in the range 0 ~ 54612 lux or unreachable value 65535 (0xFFFF) signaling erroneous measurement. The corresponding [result or error code](#constants) is set as well.
+Some of [result or error codes](#constants).
+
+#### See also
+[measureLightTyp(), measureLightMin(), measureLightMax()](#measureLightValue)
+
+[getLightTyp(), getLightMin(), getLightMax()](#getLightValue)
+
+[getLightResult()](#getLightResult)
+
+[Back to interface](#interface)
+
+
+<a id="measureLightValue"></a>
+## measureLightTyp(), measureLightMin(), measureLightMax()
+#### Description
+The particular method measures the ambient light and calculates intensity in lux for corresponding accuracy (typical, minimal, maximal). It subsequently uses the method [measureLight()](#measureLightValue) and corresponding method [getLightXXX()](#getLightValue).
+- Particular methods is useful in a sketch when the light intensity at just one accuracy is needed.
+
+#### Syntax
+    float measureLightTyp();
+    float measureLightMin();
+    float measureLightMax();
+
+#### Parameters
+None
+
+#### Returns
+Current ambient light intensity in lux at corresponding accuracy. The [result or error code](#constants) is set as well.
 
 #### See also
 [getLight()](#getLight)
@@ -269,7 +323,7 @@ Current ambient light intensity in the range 0 ~ 54612 lux or unreachable value 
 ## setAddress()
 #### Description
 The method overrides the method of the parent class by transforming and sanitizing input value, which can be a state of the ADDR pin.
-- If the input address is an address value, it should be just one of valid addresses [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses).
+- If the input address is an address value, it should be just one of valid addresses [gbj\_bh1750::ADDRESS\_LOW](#addresses), [gbj\_bh1750::ADDRESS\_FLOAT](#addresses), [gbj\_bh1750::ADDRESS\_HIGH](#addresses).
 - If the input address is the ADDR pin state, it can be either HIGH or LOW.
 - In fact, the ADDR pin is not aimed to utilize dynamic changing the device address, but to enable using two sensors on one two-wire bus.
 
@@ -284,7 +338,7 @@ Some of [result or error codes](#constants).
 
 #### Example
 ```cpp
-Sensor.setAddress(digitalRead(PIN_bh1750_ADDR));
+Sensor.setAddress(digitalRead(PIN_BH1750_ADDR));
 Sensor.setAddress(gbj_bh1750::ADDRESS_HIGH);
 ```
 
@@ -298,6 +352,8 @@ Sensor.setAddress(gbj_bh1750::ADDRESS_HIGH);
 ## setMode()
 #### Description
 The method sets the measurement mode of the sensor. It should be one of defined [measuring modes](#modes).
+- If a low measuring mode is selected, the method sets the measurement time for typical value of measurement time register.
+- For selected mode and current resolution the method calculates measurement time and measurement sensitivity.
 
 #### Syntax
     uint8_t setMode(uint8_t mode);
@@ -336,13 +392,15 @@ Current measurement mode of the sensor.
 [Back to interface](#interface)
 
 
-<a id="getLight"></a>
-## getLight()
+<a id="getLightValue"></a>
+## getLightTyp(), getLightMin(), getLightMax()
 #### Description
-The method retrieves recently measured light intensity without need to measure again, e.g., for repeating usage without local variable.
+The particular method retrieves recently measured and calculated light intensity for corresponding accuracy without need to measure again, e.g., for repeating usage without local variable in a sketch.
 
 #### Syntax
-    uint16_t getLight();
+    float getLightTyp();
+    float getLightMin();
+    float getLightMax();
 
 #### Parameters
 None
@@ -356,22 +414,212 @@ Recently measured light intensity in lux.
 [Back to interface](#interface)
 
 
-<a id="getLightByte"></a>
-## getLightMSB(), getLightLSB()
+<a id="getLightResult"></a>
+## getLightResult()
 #### Description
-The particular method retrieves the most or least significant byte of the raw sensor value from recent measurement. It is suitable for testing purposes or at very restrictive data transfers, e.g., over the air.
+The method provides binary content of the sensor's data register as a raw light intensity value from recent measurement. It is suitable for testing purposes or calibration.
 
 #### Syntax
-    uint8_t getLightMSB();
-    uint8_t getLightLSB();
+    uint16_t getLightResult();
 
 #### Parameters
 None
 
 #### Returns
-High or low byte of the recently measured sensor value word.
+Binary word of the recently measured sensor value.
 
 #### See also
-[getLight()](#getLight)
+[getLightTyp(), getLightMin(), getLightMax()](#getLightValue)
+
+[Back to interface](#interface)
+
+
+<a id="setTiming"></a>
+## setTimingTyp(), setTimingMax()
+#### Description
+The particular method sets a flag of the internal library instance determining, whether either typical or maximal measurement time values should be used at measurement by the sensor.
+
+#### Syntax
+    void setTimingTyp();
+    void setTimingMax();
+
+#### Parameters
+None
+
+#### Returns
+None
+
+#### See also
+[getTimingTyp(), getTimingMax()](#getTiming)
+
+[Back to interface](#interface)
+
+
+<a id="getTiming"></a>
+## getTimingTyp(), getTimingMax()
+#### Description
+The particular method returns a flag about currently used typical or maximal measurement time values for measurement by the sensor.
+- Although both methods are complement, they are present for enabling better readability in sketches.
+
+#### Syntax
+    bool getTimingTyp();
+    bool getTimingMax();
+
+#### Parameters
+None
+
+#### Returns
+Boolean flag about used typical or maximal measurement time values.
+
+#### See also
+[setTimingTyp(), setTimingMax()](#setTiming)
+
+[Back to interface](#interface)
+
+
+<a id="getMeasurementTime"></a>
+## getMeasurementTime(), getMeasurementTimeTyp(), getMeasurementTimeMax()
+#### Description
+The particular method returns corresponding measurement time in milliseconds for current measurement mode and resolution.
+- The methods `getMeasurementTimeTyp()` and `getMeasurementTimeMax()` are calculated for particular sensor's accuracy and current value of sensor's measurement time register.
+- The method `getMeasurementTime()` provides measurement time used for real light measurement. Its minimal value is limited to the typical measurement time for current measurement mode even if calculated time for lower resolutions is usually shorter. It ensures sufficient time for the sensor for processing measurement.
+
+#### Syntax
+    uint16_t getMeasurementTime();
+    uint16_t getMeasurementTimeTyp();
+    uint16_t getMeasurementTimeMax();
+
+#### Parameters
+None
+
+#### Returns
+Measurement time in milliseconds for current setting of the sensor.
+
+#### See also
+[getResolutionTyp(), getResolutionMin(), getResolutionMax()](#getResolution)
+
+[Back to interface](#interface)
+
+
+<a id="setResolutionVal"></a>
+## setResolutionVal()
+#### Description
+The method writes provided value to the measurement time register of the sensor.
+- The measurement resolution in conjunction with sensor's current measurement accuracy (typical, maximal) and current measurement mode determines measurement time and measurement sensitivity in `lux per bit count`.
+- The method limits minimal measurement time to the typical one for current measurement mode.
+- The method forces typical value of the measurement time register at low measurement modes.
+
+#### Syntax
+    uint8_t setResolutionVal(uint8_t mtreg);
+
+#### Parameters
+- **mtreg**: Desired value of measurement time register.
+  - *Valid values*: 31 ~ 254, typical 69
+  - *Default value*: none
+    - If current measurement mode is for low resolution, the value is always typical one.
+
+#### Returns
+Some of [result or error codes](#constants).
+
+#### See also
+[setResolutionTyp(), setResolutionMin(), setResolutionMax()](#setResolution)
+
+[Back to interface](#interface)
+
+
+<a id="setResolution"></a>
+## setResolutionTyp(), setResolutionMin(), setResolutionMax()
+#### Description
+The particular method sets measurement resolution by writing corresponding value to the measurement time register of the sensor.
+- The measurement resolution is expressed in `bit count per lux`. It determines what binary value of the sensor's data register correspods to 1 lx of measured ambient illuminance.
+- The measurement resolution in conjunction with sensor's measurement accuracy determines measurement sensitivity in lux per bit count.
+- The typical resolution is determined by the measurement time register value `69`.
+- The minimal resolution is determined by the measurement time register value `31` and corresponds to 0.45 (31/69) fraction of typical resolution. This resolution is useful for measuring the highest light intensity up to 100,000 lx.
+- The maximal resolution is determined by the measurement time register value `254` and corresponds to 3.68 (254/69) multiple of typical resolution. This resolution is useful for measuring the lowest light intensity (darkness) up to 0.11 lx in conjunction with double high measurement mode.
+- Methods utilize the method [setResolutionVal()](#setResolutionVal) for writing particular value to the sensor's measurement time register.
+
+#### Syntax
+    uint8_t setResolutionTyp();
+    uint8_t setResolutionMin();
+    uint8_t setResolutionMax();
+
+#### Parameters
+None
+
+#### Returns
+Some of [result or error codes](#constants).
+
+#### See also
+[setResolutionVal()](#setResolutionVal)
+
+[getResolutionTyp(), getResolutionMin(), getResolutionMax()](#getResolution)
+
+[Back to interface](#interface)
+
+
+<a id="getResolution"></a>
+## getResolutionTyp(), getResolutionMin(), getResolutionMax()
+#### Description
+The particular method returns currently set measurement resolution in `bit count per lux`.
+
+#### Syntax
+    float getResolutionTyp();
+    float getResolutionMin();
+    float getResolutionMax();
+
+#### Parameters
+None
+
+#### Returns
+Current measurement resolution in `bit count per lux`.
+
+#### See also
+[setResolutionTyp(), setResolutionMin(), setResolutionMax()](#setResolution)
+
+[Back to interface](#interface)
+
+
+<a id="getSensitivity"></a>
+## getSensitivityTyp(), getSensitivityMin(), getSensitivityMax()
+#### Description
+The particular method returns current measurement sensitivity.
+- The measurement sensitivity is expressed in `lux per bit count`. It determines what light intensity corresponds to 1 bit of sensor's data register.
+- The measurement sensitivity is the reciprocal value to the measurement resolution.
+
+#### Syntax
+    float getSensitivityTyp();
+    float getSensitivityMin();
+    float getSensitivityMax();
+
+#### Parameters
+None
+
+#### Returns
+Current measurement sensitivity in `lux per bit count`.
+
+#### See also
+[getResolutionTyp(), getResolutionMin(), getResolutionMax()](#getResolution)
+
+[Back to interface](#interface)
+
+
+<a id="getAccuracy"></a>
+## getAccuracyTyp(), getAccuracyMin(), getAccuracyMax()
+#### Description
+The particular method returns corresponding sensor's accuracy (typical, minimal, maximal) as the data sheet them declares in `bit count per lux`. It is a factory measurement resolution at typical value of measurement time register.
+
+#### Syntax
+    float getAccuracyTyp();
+    float getAccuracyMin();
+    float getAccuracyMax();
+
+#### Parameters
+None
+
+#### Returns
+Factory sensor accuracy in `bit count per lux`.
+
+#### See also
+[getResolutionTyp(), getResolutionMin(), getResolutionMax()](#getResolution)
 
 [Back to interface](#interface)

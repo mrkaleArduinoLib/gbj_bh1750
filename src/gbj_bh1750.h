@@ -167,11 +167,11 @@ inline float measureLightMin() { return (measureLight() == gbj_bh1750::SUCCESS) 
 //------------------------------------------------------------------------------
 uint8_t setAddress(uint8_t address);
 uint8_t setMode(uint8_t mode);
-inline void setTimingMax() { _status.flagMaxMeasurementTime = true; };
 inline void setTimingTyp() { _status.flagMaxMeasurementTime = false; };
+inline void setTimingMax() { _status.flagMaxMeasurementTime = true; };
 uint8_t setResolutionVal(uint8_t mtreg);
-inline uint8_t setResolutionTyp() { return setResolutionVal(MTREG_TYP); };
 inline uint8_t setResolutionMin() { return setResolutionVal(MTREG_MIN); };
+inline uint8_t setResolutionTyp() { return setResolutionVal(MTREG_TYP); };
 inline uint8_t setResolutionMax() { return setResolutionVal(MTREG_MAX); };
 
 
@@ -179,23 +179,23 @@ inline uint8_t setResolutionMax() { return setResolutionVal(MTREG_MAX); };
 // Public getters
 //------------------------------------------------------------------------------
 inline uint8_t getMode() { return _status.mode; };
-inline bool getTimingMax() { return _status.flagMaxMeasurementTime; };
 inline bool getTimingTyp() { return !_status.flagMaxMeasurementTime; };
+inline bool getTimingMax() { return _status.flagMaxMeasurementTime; };
 inline uint16_t getMeasurementTime() { return _status.measurementTime; };
 inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; };
 inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; };
 inline uint16_t getLightResult() { return _light.result; };  // Recent value of data register
+inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy
 inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy
 inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy
-inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy
+inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };  // lux/bitCount
 inline float getSensitivityTyp() { return 100.0 / _status.senseCoef / (float) ACCURACY_TYP; };
-inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };
 inline float getSensitivityMax() { return 100.0 / _status.senseCoef / (float) ACCURACY_MIN; };
+inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };  // bitCount/lux
 inline float getAccuracyTyp() { return (float) ACCURACY_TYP / 100.0; };
-inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };
 inline float getAccuracyMax() { return (float) ACCURACY_MAX / 100.0; };
+inline float getResolutionMin() { return (float) ACCURACY_MIN / 100.0 * _status.senseCoef; };  // bitCount/lux
 inline float getResolutionTyp() { return (float) ACCURACY_TYP / 100.0 * _status.senseCoef; };
-inline float getResolutionMin() { return (float) ACCURACY_MIN / 100.0 * _status.senseCoef; };
 inline float getResolutionMax() { return (float) ACCURACY_MAX / 100.0 * _status.senseCoef; };
 
 

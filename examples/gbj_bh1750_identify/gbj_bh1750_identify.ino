@@ -140,7 +140,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
     Serial.println("---");
 
@@ -154,7 +155,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
     Serial.println("---");
 
@@ -168,7 +170,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
@@ -182,7 +185,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
@@ -196,7 +200,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
@@ -210,7 +215,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 
@@ -224,7 +230,8 @@ void setup()
   Serial.println("Resolution (min/typ/max): " + String(Sensor.getResolutionMin()) \
     + "/" + String(Sensor.getResolutionTyp()) + "/" + String(Sensor.getResolutionMax())\
     + " bitCount/lux");
-  Serial.println("Measurement time (typ/max): " + String(Sensor.getMeasurementTimeTyp()) \
+  Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
+    + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
 

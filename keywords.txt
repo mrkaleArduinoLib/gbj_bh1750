@@ -12,15 +12,39 @@ gbj_bh1750	KEYWORD1
 #######################################
 begin	KEYWORD2
 powerOn	KEYWORD2
-powerDown	KEYWORD2
+powerOff	KEYWORD2
 reset	KEYWORD2
 measureLight	KEYWORD2
+measureLightTyp	KEYWORD2
+measureLightMin	KEYWORD2
+measureLightMax	KEYWORD2
 setAddress	KEYWORD2
 setMode	KEYWORD2
+setTimingTyp	KEYWORD2
+setTimingMax	KEYWORD2
+setResolutionVal	KEYWORD2
+setResolutionTyp	KEYWORD2
+setResolutionMin	KEYWORD2
+setResolutionMax	KEYWORD2
 getMode	KEYWORD2
-getLight	KEYWORD2
-getLightMSB	KEYWORD2
-getLightLSB	KEYWORD2
+getLightResult	KEYWORD2
+getLightTyp	KEYWORD2
+getLightMin	KEYWORD2
+getLightMax	KEYWORD2
+getTimingTyp	KEYWORD2
+getTimingMax	KEYWORD2
+getMeasurementTime	KEYWORD2
+getMeasurementTimeTyp	KEYWORD2
+getMeasurementTimeMax	KEYWORD2
+getResolutionTyp	KEYWORD2
+getResolutionMin	KEYWORD2
+getResolutionMax	KEYWORD2
+getSensitivityTyp	KEYWORD2
+getSensitivityMin	KEYWORD2
+getSensitivityMax	KEYWORD2
+getAccuracyTyp	KEYWORD2
+getAccuracyMin	KEYWORD2
+getAccuracyMax	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

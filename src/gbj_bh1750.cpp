@@ -55,6 +55,14 @@ float gbj_bh1750::calculateSenseCoef()
 
 uint8_t gbj_bh1750::measureLight()
 {
+  switch (getMode())
+  {
+    case MODE_ONETIME_LOW:
+    case MODE_ONETIME_HIGH:
+    case MODE_ONETIME_HIGH2:
+      if (setMode(getMode())) return getLastResult();  // Wake up the sensor
+      break;
+  }
   waitTimestampReceive();
   uint8_t data[2];
   if (busReceive(data, sizeof(data) / sizeof(data[0]))) return getLastResult();
@@ -110,8 +118,8 @@ uint8_t gbj_bh1750::setResolutionVal(uint8_t mtreg)
     if (busSend(mtregByte)) return getLastResult();
     mtregByte = CMD_MTIME_LOW | (_status.mtreg & B11111); // Low 5 bits
     if (busSend(mtregByte)) return getLastResult();
-    if (busSend(getMode())) return getLastResult();
   }
+  if (busSend(getMode())) return getLastResult();  // Set mode in the sensor
   calculateSenseCoef();
   setMeasurementTime();
   setTimestampReceive();
@@ -137,6 +145,8 @@ void gbj_bh1750::setMeasurementTime()
   _status.measurementTimeTyp = _status.senseCoef * defaultMeasurementTimeTyp;
   _status.measurementTimeMax = _status.senseCoef * defaultMeasurementTimeMax;
   _status.measurementTime = getTimingMax() ? _status.measurementTimeMax : _status.measurementTimeTyp;
+  // Limit minimal value of measurement time to typical value
+  _status.measurementTime = max(_status.measurementTime, defaultMeasurementTimeTyp);
   gbj_twowire::setDelayReceive(_status.measurementTime);
 }
 
@@ -156,7 +166,6 @@ uint8_t gbj_bh1750::setMode(uint8_t mode)
       mode = MODE_CONTINUOUS_HIGH;
       break;
   }
-  if (_status.mode == mode) return initLastResult();
   _status.mode = mode;
   switch (getMode())
   {
