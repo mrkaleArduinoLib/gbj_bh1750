@@ -3,7 +3,7 @@
   Fundamental parameters of BH1750FVI sensor using gbjBH1750 library.
 
   DESCRIPTION:
-  The sketch display measurement and timiing parameters of the ambient light
+  The sketch display measurement and timing parameters of the ambient light
   BH1750FVI sensor for all continuous measurement modes, all measurement times
   (all sensitivities), and for entire accuracy interval (minimal, typical, maximal).
   - Connect sensor's pins to microcontroller's I2C bus or I2C default pins
