@@ -12,6 +12,10 @@
     and maximal measurement accuracy, while within it there is measurement at
     typical accuracy.
   - Change measurement mode for various measurement sensitivity.
+  - The sketch display the light result as well. It is a raw binary value from
+    the sensor's data register.
+  - The light result in hexadecimal form is useful for observing it in a logic
+    analyser or in an oscilloscope.
 
   LICENSE:
   This program is free software; you can redistribute it and/or modify
@@ -146,7 +150,7 @@ void setup()
     + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
   Serial.println("---");
-  Serial.println("Light in lux (Min, Typ, Max)");
+  Serial.println("Result / Light in lux (Min, Typ, Max)");
 }
 
 
@@ -157,7 +161,9 @@ void loop()
   {
     errorHandler("Measurement");
   }
-  Serial.println(String(Sensor.getLightMin()) \
+  Serial.println((Sensor.getLightResult() > 0x0F ? "0x" : "0x0") \
+    + String(Sensor.getLightResult(), HEX) \
+    + " / " + String(Sensor.getLightMin()) \
     + " < " + String(Sensor.getLightTyp()) \
     + " < " + String(Sensor.getLightMax()));
   delay(PERIOD_MEASURE);
