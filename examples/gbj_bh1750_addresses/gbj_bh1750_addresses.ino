@@ -30,7 +30,7 @@ const unsigned char PIN_BH1750_ADDR = 7;  // Address pin of the sensor
 #endif
 
 gbj_bh1750 Sensor = gbj_bh1750();
-// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
+// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, D2, D1);
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_400KHZ);
 
 

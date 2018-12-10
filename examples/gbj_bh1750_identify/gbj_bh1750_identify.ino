@@ -22,7 +22,7 @@
 #include "gbj_bh1750.h"
 
 gbj_bh1750 Sensor = gbj_bh1750();
-// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
+// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, D2, D1);
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_400KHZ);
 
 

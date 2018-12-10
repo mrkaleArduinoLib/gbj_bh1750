@@ -31,7 +31,7 @@
 const unsigned int PERIOD_MEASURE = 3000;  // Time in miliseconds between measurements
 
 gbj_bh1750 Sensor = gbj_bh1750();
-// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
+// gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, D2, D1);
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_400KHZ);
 
 

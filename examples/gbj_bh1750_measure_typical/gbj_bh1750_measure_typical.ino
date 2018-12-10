@@ -128,7 +128,7 @@ void setup()
     errorHandler("Begin");
     return;
   }
-  Serial.println("Accuracy: " + String(Sensor.getAccuracy()) + " bitCount/lux");
+  Serial.println("Accuracy: " + String(Sensor.getAccuracyTyp()) + " bitCount/lux");
   Serial.println("Mode: " + getModeName());
   Serial.println("Sensitivity: " +String(Sensor.getSensitivityTyp()) + " lux/bitCount");
   Serial.println("Resolution: " +String(Sensor.getResolutionTyp()) + " bitCount/lux");
