@@ -14,20 +14,23 @@ uint8_t gbj_bh1750::begin(uint8_t address, uint8_t mode)
 
 uint8_t gbj_bh1750::powerOn()
 {
-  return busSend(CMD_POWER_ON);
+  if (busSend(CMD_POWER_ON)) return getLastResult();
+  return getLastResult();
 }
 
 
 uint8_t gbj_bh1750::powerOff()
 {
-  return busSend(CMD_POWER_DOWN);
+  if (busSend(CMD_POWER_DOWN)) return getLastResult();
+  return getLastResult();
 }
 
 
 uint8_t gbj_bh1750::reset()
 {
   if (powerOn()) return getLastResult();
-  return busSend(CMD_RESET);
+  if (busSend(CMD_RESET)) return getLastResult();
+  return getLastResult();
 }
 
 
