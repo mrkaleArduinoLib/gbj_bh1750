@@ -52,9 +52,9 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 
 <a id="addresses"></a>
 #### Measurement modes
-- **gbj\_bh1750::ADDRESS\_LOW**: Sensor's address at grounded ADDR pin (0x23).
+- **gbj\_bh1750::ADDRESS\_GND**: Sensor's address at grounded ADDR pin (0x23).
 - **gbj\_bh1750::ADDRESS\_FLOAT**: Sensor's address at floating ADDR pin (0x23). Always same as for grounded address pin, but present just for stress hardware configuration in a sketch.
-- **gbj\_bh1750::ADDRESS\_HIGH**: Sensor's address at ADDR pin connected to power voltage Vcc (0x5C).
+- **gbj\_bh1750::ADDRESS\_VCC**: Sensor's address at ADDR pin connected to power voltage Vcc (0x5C).
 
 <a id="modes"></a>
 #### Measurement modes
@@ -204,14 +204,14 @@ gbj_bh1750 Sensor = gbj_bh1750();
 setup()
 {
     Sensor.begin();  // It is equivalent to
-    Sensor.begin(gbj_bh1750::ADDRESS_LOW, gbj_bh1750::MODE_CONTINUOUS_HIGH);
+    Sensor.begin(gbj_bh1750::ADDRESS_GND, gbj_bh1750::MODE_CONTINUOUS_HIGH);
 }
 ```
 
 If some argument after some defaulted arguments should have a specific value, use corresponding constants in place of those defaulted arguments, e.g.,
 
 ``` cpp
-Sensor.begin(gbj_bh1750::ADDRESS_HIGH, gbj_bh1750::MODE_ONETIME_LOW);      // Specific measurement mode
+Sensor.begin(gbj_bh1750::ADDRESS_VCC, gbj_bh1750::MODE_ONETIME_LOW);      // Specific measurement mode
 ```
 
 Typical usage is just with default values without any arguments.
@@ -339,7 +339,7 @@ Some of [result or error codes](#constants).
 #### Example
 ```cpp
 Sensor.setAddress(digitalRead(PIN_BH1750_ADDR));
-Sensor.setAddress(gbj_bh1750::ADDRESS_HIGH);
+Sensor.setAddress(gbj_bh1750::ADDRESS_VCC);
 ```
 
 #### See also

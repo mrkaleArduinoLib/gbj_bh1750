@@ -83,19 +83,19 @@ uint8_t gbj_bh1750::setAddress(uint8_t address)
   switch (address)
   {
     case LOW:
-      address = ADDRESS_LOW;
+      address = ADDRESS_GND;
       break;
     case HIGH:
-      address = ADDRESS_HIGH;
+      address = ADDRESS_VCC;
       break;
-    case ADDRESS_LOW:
-    case ADDRESS_HIGH:
+    case ADDRESS_GND:
+    case ADDRESS_VCC:
       break;
     default:
-      address = ADDRESS_LOW;
+      address = ADDRESS_GND;
       break;
   }
-  return gbj_twowire::setAddress(address);
+  return gbj_twowire::registerAddress(address);
 }
 
 
@@ -113,7 +113,7 @@ uint8_t gbj_bh1750::setResolutionVal(uint8_t mtreg)
       mtreg = constrain(mtreg, MTREG_MIN, MTREG_MAX);
       break;
   }
-  // Send to the buse at change only
+  // Send to the bus at change only
   if (_status.mtreg != mtreg)
   {
     _status.mtreg = mtreg;

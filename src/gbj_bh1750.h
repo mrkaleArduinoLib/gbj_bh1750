@@ -38,9 +38,9 @@ public:
 static const String VERSION;
 enum Addresses
 {
-  ADDRESS_LOW = 0x23,  // ADDR <= 0.3Vcc
-  ADDRESS_FLOAT = ADDRESS_LOW,
-  ADDRESS_HIGH = 0x5C,  // ADDR >= 0.7Vcc
+  ADDRESS_GND = 0x23,  // ADDR <= 0.3Vcc
+  ADDRESS_FLOAT = ADDRESS_GND,
+  ADDRESS_VCC = 0x5C,  // ADDR >= 0.7Vcc
 };
 enum Modes
 {
@@ -76,8 +76,8 @@ gbj_bh1750(uint32_t clockSpeed = CLOCK_100KHZ, uint8_t pinSDA = 4, uint8_t pinSC
             of the ADDR pin. If it is not some of metioned values, it fallbacks
             to default value.
             - Data type: non-negative integer
-            - Default value: ADDRESS_LOW
-            - Limited range: ADDRESS_LOW, ADDRESS_HIGH, HIGH, LOW
+            - Default value: ADDRESS_GND
+            - Limited range: ADDRESS_GND, ADDRESS_VCC, HIGH, LOW
 
   mode - Measurement mode from possible listed ones.
          - Data type: non-negative integer
@@ -87,7 +87,7 @@ gbj_bh1750(uint32_t clockSpeed = CLOCK_100KHZ, uint8_t pinSDA = 4, uint8_t pinSC
   RETURN:
   Result code.
 */
-uint8_t begin(uint8_t address = ADDRESS_LOW, uint8_t mode = MODE_CONTINUOUS_HIGH);
+uint8_t begin(uint8_t address = ADDRESS_GND, uint8_t mode = MODE_CONTINUOUS_HIGH);
 
 
 /*
