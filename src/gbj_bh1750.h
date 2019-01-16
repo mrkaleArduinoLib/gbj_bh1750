@@ -187,15 +187,15 @@ inline uint16_t getLightResult() { return _light.result; };  // Recent value of 
 inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy
 inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy
 inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy
-inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };  // lux/bitCount
+inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MIN; };  // lux/bitCount
 inline float getSensitivityTyp() { return 100.0 / _status.senseCoef / (float) ACCURACY_TYP; };
-inline float getSensitivityMax() { return 100.0 / _status.senseCoef / (float) ACCURACY_MIN; };
+inline float getSensitivityMax() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };
 inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };  // bitCount/lux
 inline float getAccuracyTyp() { return (float) ACCURACY_TYP / 100.0; };
 inline float getAccuracyMax() { return (float) ACCURACY_MAX / 100.0; };
-inline float getResolutionMin() { return (float) ACCURACY_MIN / 100.0 * _status.senseCoef; };  // bitCount/lux
-inline float getResolutionTyp() { return (float) ACCURACY_TYP / 100.0 * _status.senseCoef; };
-inline float getResolutionMax() { return (float) ACCURACY_MAX / 100.0 * _status.senseCoef; };
+inline float getResolutionMin() { return 1 / getSensitivityMin(); };  // bitCount/lux
+inline float getResolutionTyp() { return 1 / getSensitivityTyp(); };
+inline float getResolutionMax() { return 1 / getSensitivityMax(); };
 
 
 private:

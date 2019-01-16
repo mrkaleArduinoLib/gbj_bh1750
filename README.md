@@ -251,7 +251,7 @@ Some of [result or error codes](#constants).
 <a id="reset"></a>
 ## reset()
 #### Description
-The method resets the illuminance data register of the sensor and removes previous measurement result.
+The method resets the illuminance data register of the sensor, which removes previous measurement result, and sets previous measurement mode.
 
 #### Syntax
     uint8_t reset();
@@ -531,11 +531,12 @@ Some of [result or error codes](#constants).
 ## setResolutionTyp(), setResolutionMin(), setResolutionMax()
 #### Description
 The particular method sets measurement resolution by writing corresponding value to the measurement time register of the sensor.
-- The measurement resolution is expressed in `bit count per lux`. It determines what binary value of the sensor's data register correspods to 1 lx of measured ambient illuminance.
-- The measurement resolution in conjunction with sensor's measurement accuracy determines measurement sensitivity in lux per bit count.
+- Those limits have nothing common with typical, minimal, or maximal values of parameters from a datasheet. They are just minimal, typical (default), and maximal values of the measurement time register.
+- The measurement resolution is expressed in `bit count per lux`. It determines what binary value of the sensor's data register corresponds to 1 lx of measured ambient illuminance.
+- The measurement resolution in conjunction with sensor's measurement accuracy determines measurement sensitivity in `lux per bit count`.
 - The typical resolution is determined by the measurement time register value `69`.
-- The minimal resolution is determined by the measurement time register value `31` and corresponds to 0.45 (31/69) fraction of typical resolution. This resolution is useful for measuring the highest light intensity up to 100,000 lx.
-- The maximal resolution is determined by the measurement time register value `254` and corresponds to 3.68 (254/69) multiple of typical resolution. This resolution is useful for measuring the lowest light intensity (darkness) up to 0.11 lx in conjunction with double high measurement mode.
+- The minimal resolution is determined by the measurement time register value `31` and corresponds to 0.45 (31/69) fraction of typical resolution. This resolution is useful for measuring the highest light intensity up to 100000 lx, theoretically to 151946 lx at minimal datasheet resolution 0.96 bit count per lux and maximal illuminance register value 65535, i.e., `69 / 31 / 0.96 * 65535`.
+- The maximal resolution is determined by the measurement time register value `254` and corresponds to 3.68 (254/69) multiple of typical resolution. This resolution is useful for measuring the lowest light intensity (darkness) down to 0.11 lx in conjunction with double high measurement mode, theoretically from 0.09 lx at maximal datasheet resolution 1.44 bit count per lux, double sensitivity, and minimal illuminance register value 1, i.e., `69 / 254 / 2 / 1.44 * 1`.
 - Methods utilize the method [setResolutionVal()](#setResolutionVal) for writing particular value to the sensor's measurement time register.
 
 #### Syntax

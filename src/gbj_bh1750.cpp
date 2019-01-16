@@ -28,8 +28,12 @@ uint8_t gbj_bh1750::powerOff()
 
 uint8_t gbj_bh1750::reset()
 {
+  bool origBusStop = getBusStop();
+  setBusRpte();
   if (powerOn()) return getLastResult();
   if (busSend(CMD_RESET)) return getLastResult();
+  setBusStopFlag(origBusStop);
+  if (setMode(getMode())) return getLastResult();
   return getLastResult();
 }
 
@@ -117,10 +121,13 @@ uint8_t gbj_bh1750::setResolutionVal(uint8_t mtreg)
   if (_status.mtreg != mtreg)
   {
     _status.mtreg = mtreg;
+    bool origBusStop = getBusStop();
     uint8_t mtregByte = CMD_MTIME_HIGH | (_status.mtreg >> 5); // High 3 bits
+    setBusRpte();
     if (busSend(mtregByte)) return getLastResult();
     mtregByte = CMD_MTIME_LOW | (_status.mtreg & B11111); // Low 5 bits
     if (busSend(mtregByte)) return getLastResult();
+    setBusStopFlag(origBusStop);
   }
   if (busSend(getMode())) return getLastResult();  // Set mode in the sensor
   calculateSenseCoef();

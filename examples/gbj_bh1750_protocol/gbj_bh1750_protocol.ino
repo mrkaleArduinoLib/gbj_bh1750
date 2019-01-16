@@ -93,7 +93,7 @@ void setup()
   Serial.println(gbj_bh1750::VERSION);
   Serial.println("---");
 
-  if (Sensor.begin(gbj_bh1750::ADDRESS_FLOAT, gbj_bh1750::MODE_CONTINUOUS_HIGH))
+  if (Sensor.begin(gbj_bh1750::ADDRESS_FLOAT, gbj_bh1750::MODE_CONTINUOUS_HIGH2))
   {
     errorHandler("Begin");
     return;
@@ -103,12 +103,20 @@ void setup()
     errorHandler("Reset");
     return;
   }
-  if (Sensor.measureLightTyp())
+  if (Sensor.setResolutionMax())
+  {
+    errorHandler("Resolution");
+    return;
+  }
+  Serial.print(Sensor.getSensitivityTyp());
+  Serial.println(" lux/bitCount");
+  if (Sensor.measureLight())
   {
     errorHandler("Measure");
     return;
   }
-  Serial.println(Sensor.getLightTyp());
+  Serial.print(Sensor.getLightTyp());
+  Serial.println(" lux");
   Serial.println("END");
 }
 
