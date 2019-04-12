@@ -65,6 +65,8 @@ Error codes as well as result code are inherited from the parent library [gbjTwo
 - **gbj\_bh1750::ONETIME\_HIGH2**: Start measurement at 0.5 lx resolution. Measurement time is typically 120 ms. The sensor is automatically set to Power Down mode after measurement.
 - **gbj\_bh1750::ONETIME\_LOW**: Start measurement at 4 lx resolution. Measurement time is typically 16 ms. The sensor is automatically set to Power Down mode after measurement.
 
+The library increases calculated measurement time from datasheet values for particular measurement mode by safety margin 5% in order to provide a sensor sufficient time for conversion. Without it the measurement is not reliable.
+
 The library does no specific error codes. All are inherited from the parent class.
 
 

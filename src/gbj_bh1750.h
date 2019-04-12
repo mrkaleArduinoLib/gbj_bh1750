@@ -216,6 +216,7 @@ enum Timing
   TIMING_HIGHRESMODE_MAX = 180,  // Maximal conversion time at high resolution mode in milliseconds
   TIMING_LOWRESMODE_TYP = 16,  // Typical conversion time at low resolution mode in milliseconds
   TIMING_LOWRESMODE_MAX = 24,  // Maximal conversion time at low resolution mode in milliseconds
+  TIMING_SAFETY_PERC = 5,  // Safety percentage increase of a final conversion time
 };
 enum MeasurementAccuracy  // In fixed float format with 2 fraction digits
 {

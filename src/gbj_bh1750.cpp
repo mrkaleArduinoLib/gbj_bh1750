@@ -70,7 +70,6 @@ uint8_t gbj_bh1750::measureLight()
       if (setMode(getMode())) return getLastResult();  // Wake up the sensor
       break;
   }
-  waitTimestampReceive();
   uint8_t data[2];
   if (busReceive(data, sizeof(data) / sizeof(data[0]))) return getLastResult();
   _light.result = (data[0] << 8) | data[1];
@@ -155,6 +154,7 @@ void gbj_bh1750::setMeasurementTime()
   _status.measurementTimeTyp = _status.senseCoef * defaultMeasurementTimeTyp;
   _status.measurementTimeMax = _status.senseCoef * defaultMeasurementTimeMax;
   _status.measurementTime = getTimingMax() ? _status.measurementTimeMax : _status.measurementTimeTyp;
+  _status.measurementTime *= 1.0 + float(TIMING_SAFETY_PERC) / 100.0;
   // Limit minimal value of measurement time to typical value
   _status.measurementTime = max(_status.measurementTime, defaultMeasurementTimeTyp);
   gbj_twowire::setDelayReceive(_status.measurementTime);
