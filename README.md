@@ -96,6 +96,7 @@ The library does no specific error codes. All are inherited from the parent clas
 
 #### Getters
 - [getMode()](#getMode)
+- [getSenseCoef()](#getSenseCoef)
 - [getLightResult()](#getLightResult)
 - [getLightTyp()](#getLightValue)
 - [getLightMin()](#getLightValue)
@@ -390,6 +391,27 @@ Current measurement mode of the sensor.
 
 #### See also
 [setMode()](#setMode)
+
+[Back to interface](#interface)
+
+
+<a id="getSenseCoef"></a>
+## getSenseCoef()
+#### Description
+The method returns the current sensitivity coefficient defined by ratio of
+current set value of the measurement time register and its typical value.
+
+#### Syntax
+    float getSenseCoef();
+
+#### Parameters
+None
+
+#### Returns
+Current sensitivity coefficient.
+
+#### See also
+[setResolutionVal()](#setResolutionVal)
 
 [Back to interface](#interface)
 

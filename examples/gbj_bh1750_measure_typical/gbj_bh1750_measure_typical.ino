@@ -17,102 +17,100 @@
   CREDENTIALS:
   Author: Libor Gabaj
 */
-#define SKETCH "GBJ_BH1750_MEASUREMENT_TYPICAL 1.0.0"
+#define SKETCH "GBJ_BH1750_MEASUREMENT_TYPICAL 1.1.0"
 
 #include "gbj_bh1750.h"
 
-const unsigned int PERIOD_MEASURE = 3000;  // Time in miliseconds between measurements
+const unsigned int PERIOD_MEASURE = 3000; // Time in miliseconds between measurements
 
 gbj_bh1750 Sensor = gbj_bh1750();
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_100KHZ, true, D2, D1);
 // gbj_bh1750 Sensor = gbj_bh1750(gbj_bh1750::CLOCK_400KHZ);
 
-
 void errorHandler(String location)
 {
-  if (Sensor.isSuccess()) return;
+  if (Sensor.isSuccess())
+    return;
   Serial.print(location);
   Serial.print(" - Error: ");
   Serial.print(Sensor.getLastResult());
   Serial.print(" - ");
   switch (Sensor.getLastResult())
   {
-    // General
-    case gbj_bh1750::ERROR_ADDRESS:
-      Serial.println("ERROR_ADDRESS");
-      break;
+  // General
+  case gbj_bh1750::ERROR_ADDRESS:
+    Serial.println("ERROR_ADDRESS");
+    break;
 
-    case gbj_bh1750::ERROR_PINS:
-      Serial.println("ERROR_PINS");
-      break;
+  case gbj_bh1750::ERROR_PINS:
+    Serial.println("ERROR_PINS");
+    break;
 
-    // Arduino, Esspressif specific
+// Arduino, Esspressif specific
 #if defined(__AVR__) || defined(ESP8266) || defined(ESP32)
-    case gbj_bh1750::ERROR_BUFFER:
-      Serial.println("ERROR_BUFFER");
-      break;
+  case gbj_bh1750::ERROR_BUFFER:
+    Serial.println("ERROR_BUFFER");
+    break;
 
-    case gbj_bh1750::ERROR_NACK_DATA:
-      Serial.println("ERROR_NACK_DATA");
-      break;
+  case gbj_bh1750::ERROR_NACK_DATA:
+    Serial.println("ERROR_NACK_DATA");
+    break;
 
-    case gbj_bh1750::ERROR_NACK_OTHER:
-      Serial.println("ERROR_NACK_OTHER");
-      break;
+  case gbj_bh1750::ERROR_NACK_OTHER:
+    Serial.println("ERROR_NACK_OTHER");
+    break;
 
-    // Particle specific
+// Particle specific
 #elif defined(PARTICLE)
-    case gbj_bh1750::ERROR_BUSY:
-      Serial.println("ERROR_BUSY");
-      break;
+  case gbj_bh1750::ERROR_BUSY:
+    Serial.println("ERROR_BUSY");
+    break;
 
-    case gbj_bh1750::ERROR_END:
-      Serial.println("ERROR_END");
-      break;
+  case gbj_bh1750::ERROR_END:
+    Serial.println("ERROR_END");
+    break;
 
-    case gbj_bh1750::ERROR_TRANSFER:
-      Serial.println("ERROR_TRANSFER");
-      break;
+  case gbj_bh1750::ERROR_TRANSFER:
+    Serial.println("ERROR_TRANSFER");
+    break;
 
-    case gbj_bh1750::ERROR_TIMEOUT:
-      Serial.println("ERROR_TIMEOUT");
-      break;
+  case gbj_bh1750::ERROR_TIMEOUT:
+    Serial.println("ERROR_TIMEOUT");
+    break;
 #endif
 
-    default:
-      Serial.println("Uknown error");
-      break;
+  default:
+    Serial.println("Uknown error");
+    break;
   }
 }
-
 
 String getModeName()
 {
   String measurementType;
   switch (Sensor.getMode())
   {
-    case gbj_bh1750::MODE_CONTINUOUS_HIGH:
-      measurementType = "Continuous High";
-      break;
-    case gbj_bh1750::MODE_CONTINUOUS_HIGH2:
-      measurementType = "Continuous High Double";
-      break;
-    case gbj_bh1750::MODE_CONTINUOUS_LOW:
-      measurementType = "Continuous Low";
-      break;
-    case gbj_bh1750::MODE_ONETIME_HIGH:
-      measurementType = "Onetime High";
-      break;
-    case gbj_bh1750::MODE_ONETIME_HIGH2:
-      measurementType = "Onetime High Double";
-      break;
-    case gbj_bh1750::MODE_ONETIME_LOW:
-      measurementType = "Onetime Low";
-      break;
+  case gbj_bh1750::MODE_CONTINUOUS_HIGH:
+    measurementType = "Continuous High";
+    break;
+  case gbj_bh1750::MODE_CONTINUOUS_HIGH2:
+    measurementType = "Continuous High Double";
+    break;
+  case gbj_bh1750::MODE_CONTINUOUS_LOW:
+    measurementType = "Continuous Low";
+    break;
+  case gbj_bh1750::MODE_ONETIME_HIGH:
+    measurementType = "Onetime High";
+    break;
+  case gbj_bh1750::MODE_ONETIME_HIGH2:
+    measurementType = "Onetime High Double";
+    break;
+  case gbj_bh1750::MODE_ONETIME_LOW:
+    measurementType = "Onetime Low";
+    break;
   }
   return measurementType;
 }
-
 
 void setup()
 {
@@ -128,19 +126,20 @@ void setup()
     errorHandler("Begin");
     return;
   }
-  Serial.println("Accuracy: " + String(Sensor.getAccuracyTyp()) + " bitCount/lux");
   Serial.println("Mode: " + getModeName());
-  Serial.println("Sensitivity: " +String(Sensor.getSensitivityTyp()) + " lux/bitCount");
-  Serial.println("Resolution: " +String(Sensor.getResolutionTyp()) + " bitCount/lux");
+  Serial.println("SenseCoef: " + String(Sensor.getSenseCoef()));
+  Serial.println("Accuracy: " + String(Sensor.getAccuracyTyp()) + " bitCount/lux");
+  Serial.println("Sensitivity: " + String(Sensor.getSensitivityTyp()) + " lux/bitCount");
+  Serial.println("Resolution: " + String(Sensor.getResolutionTyp()) + " bitCount/lux");
   Serial.println("Measurement time: " + String(Sensor.getMeasurementTime()) + " ms");
   Serial.println("---");
   Serial.println("Light in lux");
 }
 
-
 void loop()
 {
-  if (Sensor.isError()) return;
+  if (Sensor.isError())
+    return;
   Serial.println(Sensor.measureLightTyp());
   delay(PERIOD_MEASURE);
 }

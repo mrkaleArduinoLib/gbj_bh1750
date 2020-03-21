@@ -24,7 +24,7 @@
   CREDENTIALS:
   Author: Libor Gabaj
 */
-#define SKETCH "GBJ_BH1750_MEASUREMENT_INTERVAL 1.0.0"
+#define SKETCH "GBJ_BH1750_MEASUREMENT_INTERVAL 1.1.0"
 
 #include "gbj_bh1750.h"
 
@@ -128,18 +128,22 @@ void setup()
   Serial.println("Libraries:");
   Serial.println(gbj_twowire::VERSION);
   Serial.println(gbj_bh1750::VERSION);
-  Serial.println("---");
 
   if (Sensor.begin(gbj_bh1750::ADDRESS_FLOAT, gbj_bh1750::MODE_CONTINUOUS_HIGH))
   {
     errorHandler("Begin");
     return;
   }
+
+  Serial.println("---Config---");
   Sensor.setResolutionMin();
+  Serial.println("Resolution: Minimal");
+  Serial.println("Mode: " + getModeName());
+  Serial.println("SenseCoef: " + String(Sensor.getSenseCoef()));
+  Serial.println("---Params---");
   Serial.println("Accuracy (min/typ/max): " + String(Sensor.getAccuracyMin()) \
   + "/" + String(Sensor.getAccuracyTyp()) + "/" + String(Sensor.getAccuracyMax())\
   + " bitCount/lux");
-  Serial.println("Mode: " + getModeName());
   Serial.println("Sensitivity (min/typ/max): " + String(Sensor.getSensitivityMin()) \
     + "/" + String(Sensor.getSensitivityTyp()) + "/" + String(Sensor.getSensitivityMax())\
     + " lux/bitCount");
@@ -149,7 +153,7 @@ void setup()
   Serial.println("Measurement time (min/typ/max): " + String(Sensor.getMeasurementTime()) \
     + "/" + String(Sensor.getMeasurementTimeTyp()) \
     + "/" + String(Sensor.getMeasurementTimeMax()) + " ms");
-  Serial.println("---");
+  Serial.println("---Measurement---");
   Serial.println("Result / Light in lux (Min, Typ, Max)");
 }
 

@@ -184,12 +184,13 @@ inline uint16_t getMeasurementTime() { return _status.measurementTime; };
 inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; };
 inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; };
 inline uint16_t getLightResult() { return _light.result; };  // Recent value of data register
-inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy
-inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy
-inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy
-inline float getSensitivityMin() { return 100.0 / _status.senseCoef / (float) ACCURACY_MIN; };  // lux/bitCount
-inline float getSensitivityTyp() { return 100.0 / _status.senseCoef / (float) ACCURACY_TYP; };
-inline float getSensitivityMax() { return 100.0 / _status.senseCoef / (float) ACCURACY_MAX; };
+inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy, so at maximal sensitivity
+inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy, so at maximal sensitivity
+inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy, so at maximal sensitivity
+inline float getSenseCoef() { return _status.senseCoef; };  // Recently set sensitivity coefficient (lux/bitCount)
+inline float getSensitivityMin() { return 100.0 / getSenseCoef() / (float) ACCURACY_MAX; };  // lux/bitCount
+inline float getSensitivityTyp() { return 100.0 / getSenseCoef() / (float) ACCURACY_TYP; };
+inline float getSensitivityMax() { return 100.0 / getSenseCoef() / (float) ACCURACY_MIN; };
 inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };  // bitCount/lux
 inline float getAccuracyTyp() { return (float) ACCURACY_TYP / 100.0; };
 inline float getAccuracyMax() { return (float) ACCURACY_MAX / 100.0; };

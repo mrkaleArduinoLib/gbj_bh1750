@@ -1,5 +1,5 @@
 #include "gbj_bh1750.h"
-const String gbj_bh1750::VERSION = "GBJ_BH1750 1.0.0";
+const String gbj_bh1750::VERSION = "GBJ_BH1750 1.1.0";
 
 
 uint8_t gbj_bh1750::begin(uint8_t address, uint8_t mode)

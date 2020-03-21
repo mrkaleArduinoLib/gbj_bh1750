@@ -27,6 +27,7 @@ setResolutionTyp	KEYWORD2
 setResolutionMin	KEYWORD2
 setResolutionMax	KEYWORD2
 getMode	KEYWORD2
+getSenseCoef	KEYWORD2
 getLightResult	KEYWORD2
 getLightTyp	KEYWORD2
 getLightMin	KEYWORD2
