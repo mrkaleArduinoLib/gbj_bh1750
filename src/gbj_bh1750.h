@@ -12,256 +12,350 @@
 
   LICENSE:
   This program is free software; you can redistribute it and/or modify
-  it under the terms of the license GNU GPL v3 http://www.gnu.org/licenses/gpl-3.0.html
-  (related to original code) and MIT License (MIT) for added code.
+  it under the terms of the license GNU GPL v3
+  http://www.gnu.org/licenses/gpl-3.0.html (related to original code) and MIT
+  License (MIT) for added code.
 
   CREDENTIALS:
   Author: Libor Gabaj
   GitHub: https://github.com/mrkaleArduinoLib/gbj_bh1750.git
-
-  CREDITS:
-  TimChristopher Laws
-  https://github.com/claws/BH1750.git
  */
 #ifndef GBJ_BH1750_H
 #define GBJ_BH1750_H
 
 #include "gbj_twowire.h"
 
-
 class gbj_bh1750 : public gbj_twowire
 {
 public:
-//------------------------------------------------------------------------------
-// Public constants
-//------------------------------------------------------------------------------
-static const String VERSION;
-enum Addresses
-{
-  ADDRESS_GND = 0x23,  // ADDR <= 0.3Vcc
-  ADDRESS_FLOAT = ADDRESS_GND,
-  ADDRESS_VCC = 0x5C,  // ADDR >= 0.7Vcc
-};
-enum Modes
-{
-  MODE_CONTINUOUS_HIGH = 0x10,  // 1 lx / 120 ms
-  MODE_CONTINUOUS_HIGH2 = 0x11,  // 0.5 lx / 120 ms
-  MODE_CONTINUOUS_LOW = 0x13,  // 4 lx / 16 ms
-  MODE_ONETIME_HIGH = 0x20,  // 1 lx / 120 ms
-  MODE_ONETIME_HIGH2 = 0x21,  // 0.5 lx / 120 ms
-  MODE_ONETIME_LOW = 0x23,  // 4 lx / 16 ms
-};
+  enum Addresses : uint8_t
+  {
+    ADDRESS_GND = 0x23, // ADDR <= 0.3Vcc
+    ADDRESS_VCC = 0x5C, // ADDR >= 0.7Vcc
+    ADDRESS_FLOAT = Addresses::ADDRESS_GND,
+  };
+  enum Modes : uint8_t
+  {
+    MODE_CONTINUOUS_HIGH = 0x10, // 1 lx / 120 ms
+    MODE_CONTINUOUS_HIGH2 = 0x11, // 0.5 lx / 120 ms
+    MODE_CONTINUOUS_LOW = 0x13, // 4 lx / 16 ms
+    MODE_ONETIME_HIGH = 0x20, // 1 lx / 120 ms
+    MODE_ONETIME_HIGH2 = 0x21, // 0.5 lx / 120 ms
+    MODE_ONETIME_LOW = 0x23, // 4 lx / 16 ms
+  };
 
+  /*
+    Constructor taken from parent class.
+  */
+  gbj_bh1750(
+    ClockSpeed clockSpeed = ClockSpeed::CLOCK_100KHZ,
+    uint8_t pinSDA = 4,
+    uint8_t pinSCL = 5)
+    : gbj_twowire(clockSpeed, pinSDA, pinSCL)
+  {
+  }
 
-//------------------------------------------------------------------------------
-// Public methods
-//------------------------------------------------------------------------------
-/*
-  Constructor taken from parent class.
-*/
-gbj_bh1750(uint32_t clockSpeed = CLOCK_100KHZ, uint8_t pinSDA = 4, uint8_t pinSCL = 5) \
-: gbj_twowire(clockSpeed, pinSDA, pinSCL) {};
+  /*
+    Initialize two wire bus and sensor with parameters stored by constructor.
 
+    DESCRIPTION:
+    The method sanitizes and stores input parameters to the class instance
+    object, which determines the operation modus of the sensor.
+    - All measurement parameters are set to default or recommended values.
 
-/*
-  Initialize two wire bus and sensor with parameters stored by constructor.
+    PARAMETERS:
+    address - One of two possible 7 bit addresses of the sensor or state of the
+    ADDR pin. If it is not some of metioned values, it fallbacks to default
+    value.
+      - Data type: Addresses
+      - Default value: ADDRESS_GND
+      - Limited range: ADDRESS_GND, ADDRESS_VCC, HIGH, LOW
 
-  DESCRIPTION:
-  The method sanitizes and stores input parameters to the class instance object,
-  which determines the operation modus of the sensor.
-  - All measurement parameters are set to default or recommended values.
+    mode - Measurement mode from possible listed ones.
+      - Data type: Modes
+      - Default value: MODE_CONTINUOUS_HIGH
+      - Limited range: MODE_CONTINUOUS_HIGH ~ MODE_ONETIME_LOW
 
-  PARAMETERS:
-  address - One of two possible 7 bit addresses of the sensor or state
-            of the ADDR pin. If it is not some of metioned values, it fallbacks
-            to default value.
-            - Data type: non-negative integer
-            - Default value: ADDRESS_GND
-            - Limited range: ADDRESS_GND, ADDRESS_VCC, HIGH, LOW
+    RETURN: Result code
+  */
+  inline ResultCodes begin(Addresses address = Addresses::ADDRESS_GND,
+                           Modes mode = Modes::MODE_CONTINUOUS_HIGH)
+  {
+    if (isError(gbj_twowire::begin()))
+    {
+      return getLastResult();
+    }
+    if (isError(setAddress(address)))
+    {
+      return getLastResult();
+    }
+    if (isError(powerOn()))
+    {
+      return getLastResult();
+    }
+    if (isError(setMode(mode)))
+    {
+      return getLastResult();
+    }
+    return getLastResult();
+  }
 
-  mode - Measurement mode from possible listed ones.
-         - Data type: non-negative integer
-         - Default value: MODE_CONTINUOUS_HIGH
-         - Limited range: MODE_CONTINUOUS_HIGH ~ MODE_ONETIME_LOW
+  /*
+    Activate sensor.
 
-  RETURN:
-  Result code.
-*/
-uint8_t begin(uint8_t address = ADDRESS_GND, uint8_t mode = MODE_CONTINUOUS_HIGH);
+    DESCRIPTION:
+    The method puts the sensor to the state waiting on measurement command.
 
+    PARAMETERS: none
 
-/*
-  Activate sensor.
+    RETURN: Result code
+  */
+  inline ResultCodes powerOn() { return busSend(CMD_POWER_ON); }
 
-  DESCRIPTION:
-  The method puts the sensor to the state waiting on measurement command.
+  /*
+    Deactivate sensor.
 
-  PARAMETERS: none
+    DESCRIPTION:
+    The method puts the sensor to the non-active (sleep) state.
 
-  RETURN:
-  Result code.
-*/
-uint8_t powerOn();
+    PARAMETERS: none
 
+    RETURN: Result code
+  */
+  inline ResultCodes powerOff() { return busSend(CMD_POWER_DOWN); }
 
-/*
-  Deactivate sensor.
+  /*
+    Reset sensor.
 
-  DESCRIPTION:
-  The method puts the sensor to the non-active (sleep) state.
+    DESCRIPTION:
+    The method resets the illuminance data register of the sensor and removes
+    previous measurement result.
 
-  PARAMETERS: none
+    PARAMETERS: none
 
-  RETURN:
-  Result code.
-*/
-uint8_t powerOff();
+    RETURN: Result code
+  */
+  inline ResultCodes reset()
+  {
+    bool origBusStop = getBusStop();
+    setBusRpte();
+    if (isError(powerOn()))
+    {
+      return getLastResult();
+    }
+    if (isError(busSend(Commands::CMD_RESET)))
+    {
+      return getLastResult();
+    }
+    setBusStopFlag(origBusStop);
+    if (isError(setMode(getMode())))
+    {
+      return getLastResult();
+    }
+    return getLastResult();
+  }
 
+  /*
+    Measure ambient light intensity in lux.
 
-/*
-  Reset sensor.
+    DESCRIPTION: none
 
-  DESCRIPTION:
-  The method resets the illuminance data register of the sensor and removes
-  previous measurement result.
+    PARAMETERS: none
 
-  PARAMETERS: none
+    RETURN: Result code
+  */
+  inline ResultCodes measureLight()
+  {
+    switch (getMode())
+    {
+      case Modes::MODE_ONETIME_LOW:
+      case Modes::MODE_ONETIME_HIGH:
+      case Modes::MODE_ONETIME_HIGH2:
+        // Wake up the sensor
+        if (isError(setMode(getMode())))
+        {
+          return getLastResult();
+        }
+        break;
+      default:
+        break;
+    }
+    uint8_t data[2];
+    if (isError(busReceive(data, sizeof(data) / sizeof(data[0]))))
+    {
+      return getLastResult();
+    }
+    _light.result = (data[0] << 8) | data[1];
+    calculateLight();
+    return getLastResult();
+  }
 
-  RETURN:
-  Result code.
-*/
-uint8_t reset();
+  /*
+    Measure and return ambient light intensity in lux at particular accuracy.
 
+    DESCRIPTION:
+    If measurement fails, the method returns zero value.
 
-/*
-  Measure ambient light intensity in lux.
+    PARAMETERS: none
 
-  DESCRIPTION:
+    RETURN: Ambient light intensity in lux
+  */
+  inline float measureLightTyp()
+  {
+    return isSuccess(measureLight()) ? getLightTyp() : 0.0;
+  }
+  inline float measureLightMax()
+  {
+    return isSuccess(measureLight()) ? getLightMax() : 0.0;
+  }
+  inline float measureLightMin()
+  {
+    return isSuccess(measureLight()) ? getLightMin() : 0.0;
+  }
 
-  PARAMETERS: none
+  // Setters
+  ResultCodes setAddress(Addresses address);
+  ResultCodes setMode(Modes mode);
+  inline void setTimingTyp() { _status.flagMaxMeasurementTime = false; }
+  inline void setTimingMax() { _status.flagMaxMeasurementTime = true; }
+  inline ResultCodes setResolutionMin()
+  {
+    return setResolutionVal(MeasurementTiming::MTREG_MIN);
+  }
+  inline ResultCodes setResolutionTyp()
+  {
+    return setResolutionVal(MeasurementTiming::MTREG_TYP);
+  }
+  inline ResultCodes setResolutionMax()
+  {
+    return setResolutionVal(MeasurementTiming::MTREG_MAX);
+  }
 
-  RETURN:
-  Result code.
-*/
-uint8_t measureLight();
-
-
-/*
-  Measure and return ambient light intensity in lux at particular accuracy.
-
-  DESCRIPTION:
-
-  PARAMETERS: none
-
-  RETURN:
-  Ambient light intensity in lux.
-*/
-inline float measureLightTyp() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightTyp() : 0.0; };
-inline float measureLightMax() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightMax() : 0.0; };
-inline float measureLightMin() { return (measureLight() == gbj_bh1750::SUCCESS) ? getLightMin() : 0.0; };
-
-
-//------------------------------------------------------------------------------
-// Public setters - they usually return result code.
-//------------------------------------------------------------------------------
-uint8_t setAddress(uint8_t address);
-uint8_t setMode(uint8_t mode);
-inline void setTimingTyp() { _status.flagMaxMeasurementTime = false; };
-inline void setTimingMax() { _status.flagMaxMeasurementTime = true; };
-uint8_t setResolutionVal(uint8_t mtreg);
-inline uint8_t setResolutionMin() { return setResolutionVal(MTREG_MIN); };
-inline uint8_t setResolutionTyp() { return setResolutionVal(MTREG_TYP); };
-inline uint8_t setResolutionMax() { return setResolutionVal(MTREG_MAX); };
-
-
-//------------------------------------------------------------------------------
-// Public getters
-//------------------------------------------------------------------------------
-inline uint8_t getMode() { return _status.mode; };
-inline bool getTimingTyp() { return !_status.flagMaxMeasurementTime; };
-inline bool getTimingMax() { return _status.flagMaxMeasurementTime; };
-inline uint16_t getMeasurementTime() { return _status.measurementTime; };
-inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; };
-inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; };
-inline uint16_t getLightResult() { return _light.result; };  // Recent value of data register
-inline float getLightMin() { return _light.minimal; };  // Recently measured light value at minimal accuracy, so at maximal sensitivity
-inline float getLightTyp() { return _light.typical; };  // Recently measured light value at typical accuracy, so at maximal sensitivity
-inline float getLightMax() { return _light.maximal; };  // Recently measured light value at maximal accuracy, so at maximal sensitivity
-inline float getSenseCoef() { return _status.senseCoef; };  // Recently set sensitivity coefficient (lux/bitCount)
-inline float getSensitivityMin() { return 100.0 / getSenseCoef() / (float) ACCURACY_MAX; };  // lux/bitCount
-inline float getSensitivityTyp() { return 100.0 / getSenseCoef() / (float) ACCURACY_TYP; };
-inline float getSensitivityMax() { return 100.0 / getSenseCoef() / (float) ACCURACY_MIN; };
-inline float getAccuracyMin() { return (float) ACCURACY_MIN / 100.0; };  // bitCount/lux
-inline float getAccuracyTyp() { return (float) ACCURACY_TYP / 100.0; };
-inline float getAccuracyMax() { return (float) ACCURACY_MAX / 100.0; };
-inline float getResolutionMin() { return 1 / getSensitivityMin(); };  // bitCount/lux
-inline float getResolutionTyp() { return 1 / getSensitivityTyp(); };
-inline float getResolutionMax() { return 1 / getSensitivityMax(); };
-
+  // Getters
+  inline Modes getMode() { return _status.mode; }
+  inline bool getTimingTyp() { return !_status.flagMaxMeasurementTime; }
+  inline bool getTimingMax() { return _status.flagMaxMeasurementTime; }
+  inline uint16_t getMeasurementTime() { return _status.measurementTime; }
+  inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; }
+  inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; }
+  // Recent value of data register
+  inline uint16_t getLightResult() { return _light.result; }
+  // Recently measured light at minimal accuracy, so at maximal sensitivity
+  inline float getLightMin() { return _light.minimal; }
+  // Recently measured light at typical accuracy, so at maximal sensitivity
+  inline float getLightTyp() { return _light.typical; }
+  // Recently measured light at maximal accuracy, so at maximal sensitivity
+  inline float getLightMax() { return _light.maximal; }
+  // Recently set sensitivity coefficient (lux/bitCount)
+  inline float getSenseCoef() { return _status.senseCoef; }
+  // lux/bitCount
+  inline float getSensitivityMin()
+  {
+    return 100.0 / getSenseCoef() / static_cast<float>(ACCURACY_MAX);
+  }
+  inline float getSensitivityTyp()
+  {
+    return 100.0 / getSenseCoef() / static_cast<float>(ACCURACY_TYP);
+  }
+  inline float getSensitivityMax()
+  {
+    return 100.0 / getSenseCoef() / static_cast<float>(ACCURACY_MIN);
+  }
+  // bitCount/lux
+  inline float getAccuracyMin()
+  {
+    return static_cast<float>(ACCURACY_MIN) / 100.0;
+  }
+  inline float getAccuracyTyp()
+  {
+    return static_cast<float>(ACCURACY_TYP) / 100.0;
+  }
+  inline float getAccuracyMax()
+  {
+    return static_cast<float>(ACCURACY_MAX) / 100.0;
+  }
+  // bitCount/lux
+  inline float getResolutionMin() { return 1.0 / getSensitivityMin(); }
+  inline float getResolutionTyp() { return 1.0 / getSensitivityTyp(); }
+  inline float getResolutionMax() { return 1.0 / getSensitivityMax(); }
 
 private:
-//------------------------------------------------------------------------------
-// Private constants
-//------------------------------------------------------------------------------
-enum Commands
-{
-  CMD_POWER_DOWN = 0x00,  // No active state
-  CMD_POWER_ON = 0x01,  // Wating for measurement command
-  CMD_RESET = 0x07,  // Reset data register value
-  CMD_MTIME_HIGH = 0x40,  // Change high bits of measurement time
-  CMD_MTIME_LOW = 0x60,  // Change low bits of measurement time
-};
-enum Timing
-{
-  TIMING_HIGHRESMODE_TYP = 120,  // Typical conversion time at high resolution mode in milliseconds
-  TIMING_HIGHRESMODE_MAX = 180,  // Maximal conversion time at high resolution mode in milliseconds
-  TIMING_LOWRESMODE_TYP = 16,  // Typical conversion time at low resolution mode in milliseconds
-  TIMING_LOWRESMODE_MAX = 24,  // Maximal conversion time at low resolution mode in milliseconds
-  TIMING_SAFETY_PERC = 5,  // Safety percentage increase of a final conversion time
-};
-enum MeasurementAccuracy  // In fixed float format with 2 fraction digits
-{
-  ACCURACY_TYP = 120,  // Typical measurement accuracy 1.2 count/lux
-  ACCURACY_MIN = 96,  // Minimal measurement accuracy 0.96 count/lux
-  ACCURACY_MAX = 144,  // Maximal measurement accuracy 1.44 count/lux
-};
-enum MeasurementTiming
-{
-  MTREG_TYP = 69,  // Typical value of measurement time register
-  MTREG_MIN = 31,  // Minimal value of measurement time register
-  MTREG_MAX = 254,  // Maximal value of measurement time register
-};
-
-
-//------------------------------------------------------------------------------
-// Private attributes
-//------------------------------------------------------------------------------
-struct
-{
-  uint8_t mode;  // Current measurement mode of the sensor
-  uint8_t mtreg;  // Current value of measurement time register
-  float senseCoef;  // Sensitivity coeficient
-  bool flagMaxMeasurementTime;
-  uint16_t measurementTime;  // In milliseconds
-  uint16_t measurementTimeTyp;  // In milliseconds
-  uint16_t measurementTimeMax;  // In milliseconds
-} _status;  // Initially set to default values
-struct
-{
-  uint16_t result;  // Sensor output of measurement
-  float typical;  // Light intensity in lux at typical measurement accuracy
-  float minimal;  // Light intensity in lux at minimal measurement accuracy
-  float maximal;  // Light intensity in lux at maximal measurement accuracy
-} _light;
-
-
-//------------------------------------------------------------------------------
-// Private methods
-//------------------------------------------------------------------------------
-void calculateLight();
-void setMeasurementTime();
-float calculateSenseCoef();  // Counts per lux
-
+  enum Commands : uint8_t
+  {
+    CMD_POWER_DOWN = 0x00, // No active state
+    CMD_POWER_ON = 0x01, // Wating for measurement command
+    CMD_RESET = 0x07, // Reset data register value
+    CMD_MTIME_HIGH = 0x40, // Change high bits of measurement time
+    CMD_MTIME_LOW = 0x60, // Change low bits of measurement time
+  };
+  enum Timing : uint8_t
+  {
+    // Typical conversion time at high resolution mode in milliseconds
+    TIMING_HIGHRESMODE_TYP = 120,
+    // Maximal conversion time at high resolution mode in milliseconds
+    TIMING_HIGHRESMODE_MAX = 180,
+    // Typical conversion time at low resolution mode in milliseconds
+    TIMING_LOWRESMODE_TYP = 16,
+    // Maximal conversion time at low resolution mode in milliseconds
+    TIMING_LOWRESMODE_MAX = 24,
+    // Safety percentage increase of a final conversion time
+    TIMING_SAFETY_PERC = 5,
+  };
+  enum MeasurementTiming : uint8_t
+  {
+    MTREG_TYP = 69, // Typical value of measurement time register
+    MTREG_MIN = 31, // Minimal value of measurement time register
+    MTREG_MAX = 254, // Maximal value of measurement time register
+  };
+  // In fixed float format with 2 fraction digits
+  enum MeasurementAccuracy : uint8_t
+  {
+    ACCURACY_TYP = 120, // Typical measurement accuracy 1.2 count/lux
+    ACCURACY_MIN = 96, // Minimal measurement accuracy 0.96 count/lux
+    ACCURACY_MAX = 144, // Maximal measurement accuracy 1.44 count/lux
+  };
+  // Initially set to default values
+  struct Status
+  {
+    Modes mode; // Current measurement mode of the sensor
+    MeasurementTiming mtreg; // Current value of measurement time register
+    float senseCoef; // Sensitivity coeficient
+    bool flagMaxMeasurementTime;
+    uint16_t measurementTime; // In milliseconds
+    uint16_t measurementTimeTyp; // In milliseconds
+    uint16_t measurementTimeMax; // In milliseconds
+  } _status;
+  struct Light
+  {
+    uint16_t result; // Sensor output of measurement
+    float typical; // Light intensity in lux at typical measurement accuracy
+    float minimal; // Light intensity in lux at minimal measurement accuracy
+    float maximal; // Light intensity in lux at maximal measurement accuracy
+  } _light;
+  inline void calculateLight()
+  {
+    _light.typical = static_cast<float>(_light.result) * getSensitivityTyp();
+    _light.minimal = static_cast<float>(_light.result) * getSensitivityMin();
+    _light.maximal = static_cast<float>(_light.result) * getSensitivityMax();
+  }
+  // Counts per lux
+  inline float calculateSenseCoef()
+  {
+    _status.senseCoef = static_cast<float>(_status.mtreg) /
+                        static_cast<float>(MeasurementTiming::MTREG_TYP);
+    switch (getMode())
+    {
+      case Modes::MODE_CONTINUOUS_HIGH2:
+      case Modes::MODE_ONETIME_HIGH2:
+        _status.senseCoef *= 2.0;
+        break;
+      default:
+        break;
+    }
+    return _status.senseCoef;
+  }
+  void setMeasurementTime();
+  ResultCodes setResolutionVal(MeasurementTiming mtreg);
 };
 
 #endif
