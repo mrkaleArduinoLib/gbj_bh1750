@@ -8,5 +8,13 @@
   },
   "version": "1.2.0",
   "frameworks": "arduino",
-  "platforms": ["atmelavr", "atmelsam", "espressif8266", "espressif32"]
+  "platforms": [
+    "atmelavr",
+    "atmelsam",
+    "espressif8266",
+    "espressif32"
+  ],
+  "dependencies": {
+    "mrkaleArduinoLib/gbj_twowire": ">=1.2.0"
+  }
 }

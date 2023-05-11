@@ -39,7 +39,7 @@ Library for digital ambient light sensor `BH1750` with `two-wire` (also known as
 <a id="constants"></a>
 
 ## Constants
-The library does no specific error codes. Error codes as well as result code are inherited from the parent library [gbjTwoWire](#dependency) only.
+The library does not have specific error codes. Error codes as well as result code are inherited from the parent library [gbjTwoWire](#dependency) only.
 
 
 <a id="addresses"></a>
