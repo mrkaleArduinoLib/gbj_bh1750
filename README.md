@@ -142,12 +142,12 @@ The library does not need special constructor and destructor, so that the inheri
 * All the constructor parameters can be changed dynamically with corresponding setters later in a sketch.
 
 #### Syntax
-    gbj_bh1750(ClockSpeed clockSpeed, bool busStop, uint8_t pinSDA, uint8_t pinSCL)
+    gbj_bh1750(ClockSpeeds clockSpeed, bool busStop, uint8_t pinSDA, uint8_t pinSCL)
 
 #### Parameters
 * **clockSpeed**: Two-wire bus clock frequency in Hertz.
-  * *Valid values*:ClockSpeed::CLOCK\_100KHZ, ClockSpeed::CLOCK\_400KHZ
-  * *Default value*: ClockSpeed::CLOCK\_100KHZ
+  * *Valid values*:ClockSpeeds::CLOCK\_100KHZ, ClockSpeeds::CLOCK\_400KHZ
+  * *Default value*: ClockSpeeds::CLOCK\_100KHZ
 
 * **busStop**: Logical flag about releasing bus after end of transmission.
   * *Valid values*: true, false

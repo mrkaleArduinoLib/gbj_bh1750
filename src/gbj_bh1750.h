@@ -44,7 +44,7 @@ public:
     MODE_ONETIME_LOW = 0x23, // 4 lx / 16 ms
   };
 
-  gbj_bh1750(ClockSpeed clockSpeed = ClockSpeed::CLOCK_100KHZ,
+  gbj_bh1750(ClockSpeeds clockSpeed = ClockSpeeds::CLOCK_100KHZ,
              uint8_t pinSDA = 4,
              uint8_t pinSCL = 5)
     : gbj_twowire(clockSpeed, pinSDA, pinSCL)
