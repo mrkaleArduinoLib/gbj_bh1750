@@ -39,26 +39,26 @@ Library for digital ambient light sensor `BH1750` with `two-wire` (also known as
 <a id="constants"></a>
 
 ## Constants
-The library does not have specific error codes. Error codes as well as result code are inherited from the parent library [gbjTwoWire](#dependency) only.
+The library does not have specific error codes. Error codes as well as result code are inherited from the parent library only. The result code and error codes can be tested in the operational code with its method `getLastResult()`, `isError()` or `isSuccess()`.
 
 
 <a id="addresses"></a>
 
 #### Sensor addresses
-* **gbj\_bh1750::Addresses::ADDRESS\_GND**: Sensor's address at grounded ADDR pin.
-* **gbj\_bh1750::Addresses::ADDRESS\_VCC**: Sensor's address at ADDR pin connected to power supply voltage Vcc.
-* **gbj\_bh1750::Addresses::ADDRESS\_FLOAT**: Sensor's address at floating ADDR pin. Always same as for grounded address pin, but present just for hardware configuration in a sketch.
+* **Addresses::ADDRESS\_GND**: Sensor's address at grounded ADDR pin.
+* **Addresses::ADDRESS\_VCC**: Sensor's address at ADDR pin connected to power supply voltage Vcc.
+* **Addresses::ADDRESS\_FLOAT**: Sensor's address at floating ADDR pin. Always same as for grounded address pin, but present just for hardware configuration in a sketch.
 
 
 <a id="modes"></a>
 
 #### Measurement modes
-* **gbj\_bh1750::Modes::CONTINUOUS\_HIGH**: Start measurement at `1 lx` resolution. Measurement time is typically `120 ms`.
-* **gbj\_bh1750::Modes::CONTINUOUS\_HIGH2**: Start measurement at `0.5 lx` resolution. Measurement time is typically `120 ms`.
-* **gbj\_bh1750::Modes::CONTINUOUS\_LOW**: Start measurement at `4 lx` resolution. Measurement time is typically `16 ms`.
-* **gbj\_bh1750::Modes::ONETIME\_HIGH**: Start measurement at `1 lx` resolution. Measurement time is typically `120 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
-* **gbj\_bh1750::Modes::ONETIME\_HIGH2**: Start measurement at `0.5 lx` resolution. Measurement time is typically `120 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
-* **gbj\_bh1750::Modes::ONETIME\_LOW**: Start measurement at `4 lx` resolution. Measurement time is typically `16 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
+* **Modes::CONTINUOUS\_HIGH**: Start measurement at `1 lx` resolution. Measurement time is typically `120 ms`.
+* **Modes::CONTINUOUS\_HIGH2**: Start measurement at `0.5 lx` resolution. Measurement time is typically `120 ms`.
+* **Modes::CONTINUOUS\_LOW**: Start measurement at `4 lx` resolution. Measurement time is typically `16 ms`.
+* **Modes::ONETIME\_HIGH**: Start measurement at `1 lx` resolution. Measurement time is typically `120 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
+* **Modes::ONETIME\_HIGH2**: Start measurement at `0.5 lx` resolution. Measurement time is typically `120 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
+* **Modes::ONETIME\_LOW**: Start measurement at `4 lx` resolution. Measurement time is typically `16 ms`. The sensor is automatically set to _Power Down_ mode after measurement.
 
 The library increases calculated measurement time from datasheet values for particular measurement mode by safety margin 5% in order to provide a sensor sufficient time for conversion. Without it the measurement is not reliable.
 
@@ -165,7 +165,7 @@ The library does not need special constructor and destructor, so that the inheri
 
 #### Returns
 Object performing the sensor management.
-The constructor cannot return [a result or error code](#constants) directly, however, it stores them in the instance object. The result can be tested in the operational code with the method [getLastResult()](#getLastResult), [isError()](#isError), or [isSuccess()](#isSuccess).
+The constructor cannot return [a result or error code](#constants) directly, however, it stores them in the instance object.
 
 #### Example
 The method has all arguments defaulted and calling without any parameters is equivalent to the calling with all arguments set by corresponding constant with default value:
