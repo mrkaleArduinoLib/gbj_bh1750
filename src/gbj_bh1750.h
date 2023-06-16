@@ -30,8 +30,10 @@ class gbj_bh1750 : public gbj_twowire
 public:
   enum Addresses : uint8_t
   {
-    ADDRESS_GND = 0x23, // ADDR <= 0.3Vcc
-    ADDRESS_VCC = 0x5C, // ADDR >= 0.7Vcc
+    // ADDR <= 0.3Vcc, connected to GND
+    ADDRESS_GND = 0x23,
+    // ADDR >= 0.7Vcc, connected to Vcc
+    ADDRESS_VCC = 0x5C,
     ADDRESS_FLOAT = Addresses::ADDRESS_GND,
   };
   enum Modes : uint8_t
@@ -181,7 +183,7 @@ public:
     {
       return getLastResult();
     }
-    _light.result = (data[0] << 8) | data[1];
+    light_.result = (data[0] << 8) | data[1];
     calculateLight();
     return getLastResult();
   }
@@ -212,8 +214,8 @@ public:
   // Setters
   ResultCodes setAddress(Addresses address);
   ResultCodes setMode(Modes mode);
-  inline void setTimingTyp() { _status.flagMaxMeasurementTime = false; }
-  inline void setTimingMax() { _status.flagMaxMeasurementTime = true; }
+  inline void setTimingTyp() { status_.flagMaxMeasurementTime = false; }
+  inline void setTimingMax() { status_.flagMaxMeasurementTime = true; }
   inline ResultCodes setResolutionMin()
   {
     return setResolutionVal(MeasurementTiming::MTREG_MIN);
@@ -228,22 +230,22 @@ public:
   }
 
   // Getters
-  inline Modes getMode() { return _status.mode; }
-  inline bool getTimingTyp() { return !_status.flagMaxMeasurementTime; }
-  inline bool getTimingMax() { return _status.flagMaxMeasurementTime; }
-  inline uint16_t getMeasurementTime() { return _status.measurementTime; }
-  inline uint16_t getMeasurementTimeTyp() { return _status.measurementTimeTyp; }
-  inline uint16_t getMeasurementTimeMax() { return _status.measurementTimeMax; }
+  inline Modes getMode() { return status_.mode; }
+  inline bool getTimingTyp() { return !status_.flagMaxMeasurementTime; }
+  inline bool getTimingMax() { return status_.flagMaxMeasurementTime; }
+  inline uint16_t getMeasurementTime() { return status_.measurementTime; }
+  inline uint16_t getMeasurementTimeTyp() { return status_.measurementTimeTyp; }
+  inline uint16_t getMeasurementTimeMax() { return status_.measurementTimeMax; }
   // Recent value of data register
-  inline uint16_t getLightResult() { return _light.result; }
+  inline uint16_t getLightResult() { return light_.result; }
   // Recently measured light at minimal accuracy, so at maximal sensitivity
-  inline float getLightMin() { return _light.minimal; }
+  inline float getLightMin() { return light_.minimal; }
   // Recently measured light at typical accuracy, so at maximal sensitivity
-  inline float getLightTyp() { return _light.typical; }
+  inline float getLightTyp() { return light_.typical; }
   // Recently measured light at maximal accuracy, so at maximal sensitivity
-  inline float getLightMax() { return _light.maximal; }
+  inline float getLightMax() { return light_.maximal; }
   // Recently set sensitivity coefficient (lux/bitCount)
-  inline float getSenseCoef() { return _status.senseCoef; }
+  inline float getSenseCoef() { return status_.senseCoef; }
   // lux/bitCount
   inline float getSensitivityMin()
   {
@@ -320,35 +322,35 @@ private:
     uint16_t measurementTime; // In milliseconds
     uint16_t measurementTimeTyp; // In milliseconds
     uint16_t measurementTimeMax; // In milliseconds
-  } _status;
+  } status_;
   struct Light
   {
     uint16_t result; // Sensor output of measurement
     float typical; // Light intensity in lux at typical measurement accuracy
     float minimal; // Light intensity in lux at minimal measurement accuracy
     float maximal; // Light intensity in lux at maximal measurement accuracy
-  } _light;
+  } light_;
   inline void calculateLight()
   {
-    _light.typical = static_cast<float>(_light.result) * getSensitivityTyp();
-    _light.minimal = static_cast<float>(_light.result) * getSensitivityMin();
-    _light.maximal = static_cast<float>(_light.result) * getSensitivityMax();
+    light_.typical = static_cast<float>(light_.result) * getSensitivityTyp();
+    light_.minimal = static_cast<float>(light_.result) * getSensitivityMin();
+    light_.maximal = static_cast<float>(light_.result) * getSensitivityMax();
   }
   // Counts per lux
   inline float calculateSenseCoef()
   {
-    _status.senseCoef = static_cast<float>(_status.mtreg) /
+    status_.senseCoef = static_cast<float>(status_.mtreg) /
                         static_cast<float>(MeasurementTiming::MTREG_TYP);
     switch (getMode())
     {
       case Modes::MODE_CONTINUOUS_HIGH2:
       case Modes::MODE_ONETIME_HIGH2:
-        _status.senseCoef *= 2.0;
+        status_.senseCoef *= 2.0;
         break;
       default:
         break;
     }
-    return _status.senseCoef;
+    return status_.senseCoef;
   }
   void setMeasurementTime();
   ResultCodes setResolutionVal(MeasurementTiming mtreg);

@@ -30,19 +30,19 @@ gbj_bh1750::ResultCodes gbj_bh1750::setResolutionVal(MeasurementTiming mtreg)
       break;
   }
   // Send to the bus at change only
-  if (_status.mtreg != mtreg)
+  if (status_.mtreg != mtreg)
   {
-    _status.mtreg = mtreg;
+    status_.mtreg = mtreg;
     bool origBusStop = getBusStop();
     // High 3 bits
-    uint8_t mtregByte = Commands::CMD_MTIME_HIGH | (_status.mtreg >> 5);
+    uint8_t mtregByte = Commands::CMD_MTIME_HIGH | (status_.mtreg >> 5);
     setBusRpte();
     if (isError(busSend(mtregByte)))
     {
       return getLastResult();
     }
     // Low 5 bits
-    mtregByte = Commands::CMD_MTIME_LOW | (_status.mtreg & B11111);
+    mtregByte = Commands::CMD_MTIME_LOW | (status_.mtreg & B11111);
     if (isError(busSend(mtregByte)))
     {
       return getLastResult();
@@ -75,15 +75,15 @@ void gbj_bh1750::setMeasurementTime()
       defaultMeasurementTimeMax = Timing::TIMING_HIGHRESMODE_MAX;
       break;
   }
-  _status.measurementTimeTyp = _status.senseCoef * defaultMeasurementTimeTyp;
-  _status.measurementTimeMax = _status.senseCoef * defaultMeasurementTimeMax;
-  _status.measurementTime =
-    getTimingMax() ? _status.measurementTimeMax : _status.measurementTimeTyp;
-  _status.measurementTime *= 1.0 + float(Timing::TIMING_SAFETY_PERC) / 100.0;
+  status_.measurementTimeTyp = status_.senseCoef * defaultMeasurementTimeTyp;
+  status_.measurementTimeMax = status_.senseCoef * defaultMeasurementTimeMax;
+  status_.measurementTime =
+    getTimingMax() ? status_.measurementTimeMax : status_.measurementTimeTyp;
+  status_.measurementTime *= 1.0 + float(Timing::TIMING_SAFETY_PERC) / 100.0;
   // Limit minimal value of measurement time to typical value
-  _status.measurementTime =
-    max(_status.measurementTime, defaultMeasurementTimeTyp);
-  gbj_twowire::setDelayReceive(_status.measurementTime);
+  status_.measurementTime =
+    max(status_.measurementTime, defaultMeasurementTimeTyp);
+  gbj_twowire::setDelayReceive(status_.measurementTime);
 }
 
 gbj_bh1750::ResultCodes gbj_bh1750::setMode(Modes mode)
@@ -101,7 +101,7 @@ gbj_bh1750::ResultCodes gbj_bh1750::setMode(Modes mode)
       mode = Modes::MODE_CONTINUOUS_HIGH;
       break;
   }
-  _status.mode = mode;
+  status_.mode = mode;
   switch (getMode())
   {
     case Modes::MODE_CONTINUOUS_LOW:
@@ -110,7 +110,7 @@ gbj_bh1750::ResultCodes gbj_bh1750::setMode(Modes mode)
         return getLastResult();
       break;
     default:
-      if (setResolutionVal(_status.mtreg))
+      if (setResolutionVal(status_.mtreg))
         return getLastResult();
       break;
   }

@@ -193,8 +193,8 @@ The method takes, sanitizes, and stores sensor parameters to a class instance ob
 
 #### Parameters
 * **address**: One of two possible 7 bit addresses of the sensor corresponding to the ADDR pin connection.
-  * *Valid values*: [Addresses::ADDRESS\_LOW, Addresses::ADDRESS\_HIGH, Addresses::ADDRESS\_FLOAT](#addresses)
-  * *Default value*: [_FLOAT::ADDRESS\_LOW](#addresses)
+  * *Valid values*: [Addresses::ADDRESS\_GND, Addresses::ADDRESS\_VCC, Addresses::ADDRESS\_FLOAT](#addresses)
+  * *Default value*: [_FLOAT::ADDRESS\_GND](#addresses)
 
 * **mode**: Measurement mode from possible listed ones.
   * *Valid values*: [Modes::MODE\_CONTINUOUS\_HIGH](#modes) ~ [Modes::MODE\_ONETIME\_LOW](#modes)
